@@ -21,7 +21,7 @@ const Profile = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "";
     if (imagePath.startsWith("http")) return imagePath;
-    return `http://localhost:5000${imagePath}`;
+    return `https://travel-together-z3dr.onrender.com${imagePath}`;
   };
 
   const fetchFriends = async () => {
