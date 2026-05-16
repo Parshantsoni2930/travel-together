@@ -11,8 +11,7 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-const allowedOrigins = [
-  "http://localhost:5173",
+const allowedOrigins = [,
   "https://travel-together-kej8-nbmx8am13-parshantsoni2930s-projects.vercel.app",
 ];
 
