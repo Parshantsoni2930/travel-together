@@ -51,7 +51,7 @@ const Navbar = () => {
     if (!img) return null;
     if (img.startsWith("http")) return img;
 
-    return `http://localhost:5000${img.startsWith("/") ? img : `/${img}`}`;
+    return ` https://travel-together-z3dr.onrender.com${img.startsWith("/") ? img : `/${img}`}`;
   };
 
   const isActive = (path) => location.pathname === path;
