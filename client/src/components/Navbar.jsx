@@ -208,18 +208,20 @@ const navStyle = {
 const brandBox = {
   display: "flex",
   alignItems: "center",
-  gap: "14px",
+  gap: "6px",
   cursor: "pointer",
-  minWidth: "260px",
+  minWidth: "340px",
+  marginLeft: "-10px",
 };
 
 const logoBox = {
-  width: "58px",
-  height: "58px",
+  width: "86px",
+  height: "86px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   overflow: "hidden",
+  flexShrink: 0,
 };
 
 const logoImg = {
@@ -227,6 +229,7 @@ const logoImg = {
   height: "100%",
   objectFit: "contain",
   background: "transparent",
+  transform: "scale(1.35)",
 };
 
 const brandTitle = {
