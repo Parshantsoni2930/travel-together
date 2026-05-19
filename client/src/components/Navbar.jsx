@@ -77,7 +77,7 @@ const Navbar = () => {
     <>
       <nav style={navStyle}>
         <div style={brandBox} onClick={() => navigate("/home")}>
-          <div style={logoBox}>TB</div>
+          <div style={logoBox}><img src="/images/logo (2).png" alt="Travel Buddy Finder" style={logoImg} /></div>
 
           <div>
             <h2 style={brandTitle}>Travel Buddy Finder</h2>
@@ -393,6 +393,15 @@ const mobileLogout = {
   marginTop: "14px",
   background: "#ffffff",
   color: "#000000",
+};
+
+const logoImg = {
+  width: "58px",
+  height: "58px",
+  borderRadius: "18px",
+  objectFit: "cover",
+  background: "#ffffff",
+  padding: "4px",
 };
 
 export default Navbar;
