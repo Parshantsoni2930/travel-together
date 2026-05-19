@@ -13,6 +13,7 @@ const Navbar = () => {
   useEffect(() => {
     const checkScreen = () => setIsMobile(window.innerWidth <= 900);
     checkScreen();
+
     window.addEventListener("resize", checkScreen);
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
@@ -20,6 +21,7 @@ const Navbar = () => {
   useEffect(() => {
     const loadUser = () => {
       const storedUser = localStorage.getItem("user");
+
       if (storedUser) {
         setUser(JSON.parse(storedUser));
         setImageError(false);
@@ -27,6 +29,7 @@ const Navbar = () => {
     };
 
     loadUser();
+
     window.addEventListener("userUpdated", loadUser);
     return () => window.removeEventListener("userUpdated", loadUser);
   }, []);
@@ -77,7 +80,13 @@ const Navbar = () => {
     <>
       <nav style={navStyle}>
         <div style={brandBox} onClick={() => navigate("/home")}>
-          <div style={logoBox}><img src="/images/logo (2).png" alt="Travel Buddy Finder" style={logoImg} /></div>
+          <div style={logoBox}>
+            <img
+              src="/images/logo (2).png"
+              alt="TBF"
+              style={logoImg}
+            />
+          </div>
 
           <div>
             <h2 style={brandTitle}>Travel Buddy Finder</h2>
@@ -134,8 +143,13 @@ const Navbar = () => {
         <div style={overlayStyle} onClick={() => setMenuOpen(false)}>
           <div style={mobileMenu} onClick={(e) => e.stopPropagation()}>
             <div style={mobileTop}>
-              <div style={brandBox}>
-                <div style={mobileLogoBox}>TB</div>
+              <div style={mobileBrandBox}>
+                <img
+                  src="/images/logo (2).png"
+                  alt="TBF"
+                  style={mobileLogoImg}
+                />
+
                 <div>
                   <h2 style={mobileTitle}>Travel Buddy Finder</h2>
                   <p style={brandSub}>Find trips & buddies.</p>
@@ -200,17 +214,19 @@ const brandBox = {
 };
 
 const logoBox = {
-  width: "56px",
-  height: "56px",
-  borderRadius: "16px",
-  background: "#ffffff",
-  color: "#000000",
+  width: "58px",
+  height: "58px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontWeight: "900",
-  fontSize: "20px",
-  boxShadow: "0 10px 24px rgba(255,255,255,0.12)",
+  overflow: "hidden",
+};
+
+const logoImg = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain",
+  background: "transparent",
 };
 
 const brandTitle = {
@@ -336,11 +352,16 @@ const mobileTop = {
   borderBottom: "1px solid rgba(255,255,255,0.12)",
 };
 
-const mobileLogoBox = {
-  ...logoBox,
+const mobileBrandBox = {
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+};
+
+const mobileLogoImg = {
   width: "52px",
   height: "52px",
-  borderRadius: "14px",
+  objectFit: "contain",
 };
 
 const mobileTitle = {
@@ -393,15 +414,6 @@ const mobileLogout = {
   marginTop: "14px",
   background: "#ffffff",
   color: "#000000",
-};
-
-const logoImg = {
-  width: "58px",
-  height: "58px",
-  borderRadius: "18px",
-  objectFit: "cover",
-  background: "#ffffff",
-  padding: "4px",
 };
 
 export default Navbar;
