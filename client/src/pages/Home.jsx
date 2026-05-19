@@ -207,37 +207,35 @@ const Home = () => {
     </div>
   );
 };
-
 const pageStyle = {
   width: "100%",
   minHeight: "100vh",
   padding: "24px",
-  background:
-    "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
-  boxSizing: "border-box",
+  background: "#050505",
 };
-
 const heroSection = {
   width: "100%",
-  padding: "34px",
+  padding: "38px",
   marginBottom: "26px",
-  borderRadius: "28px",
-  background: "linear-gradient(135deg, rgba(79,70,229,0.9), rgba(236,72,153,0.85), rgba(249,115,22,0.8))",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
-  color: "#fff",
+  borderRadius: "30px",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.45)",
+  color: "#ffffff",
 };
 
 const heroTitle = {
-  fontSize: "clamp(32px, 5vw, 52px)",
+  fontSize: "clamp(34px, 5vw, 58px)",
   lineHeight: "1.1",
   fontWeight: "900",
-  marginBottom: "12px",
+  marginBottom: "14px",
+  color: "#ffffff",
 };
 
 const heroText = {
   fontSize: "18px",
-  lineHeight: "1.6",
-  color: "#f8fafc",
+  lineHeight: "1.7",
+  color: "#a3a3a3",
   maxWidth: "850px",
 };
 
@@ -249,8 +247,9 @@ const searchBar = {
   flexWrap: "wrap",
   padding: "18px",
   borderRadius: "22px",
-  background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.28)",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 12px 35px rgba(0,0,0,0.4)",
 };
 
 const searchInput = {
@@ -258,26 +257,30 @@ const searchInput = {
   minWidth: "240px",
   padding: "14px",
   borderRadius: "14px",
-  border: "1px solid #cbd5e1",
+  border: "1px solid rgba(255,255,255,0.1)",
   outline: "none",
   fontSize: "15px",
+  background: "#181818",
+  color: "#ffffff",
 };
 
 const searchSelect = {
   minWidth: "180px",
   padding: "14px",
   borderRadius: "14px",
-  border: "1px solid #cbd5e1",
+  border: "1px solid rgba(255,255,255,0.1)",
   outline: "none",
   fontSize: "15px",
+  background: "#181818",
+  color: "#ffffff",
 };
 
 const clearBtn = {
   padding: "14px 22px",
   borderRadius: "14px",
-  border: "none",
-  background: "linear-gradient(135deg, #ef4444, #f97316)",
-  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
@@ -297,19 +300,20 @@ if (window.innerWidth <= 1000) {
 const sectionBox = {
   width: "100%",
   padding: "24px",
-  borderRadius: "26px",
-  background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.35)",
-  color: "#111827",
+  borderRadius: "28px",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 12px 35px rgba(0,0,0,0.4)",
+  color: "#ffffff",
   overflow: "hidden",
   minWidth: 0,
 };
 
 const sectionTitle = {
-  fontSize: "26px",
+  fontSize: "28px",
   fontWeight: "900",
   marginBottom: "18px",
-  color: "#111827",
+  color: "#ffffff",
 };
 
 const tripList = {
@@ -320,21 +324,28 @@ const tripList = {
 
 const tripCard = {
   width: "100%",
-  padding: "22px",
-  borderRadius: "22px",
-  background: "linear-gradient(135deg, #ffffff, #f1f5f9)",
-  boxShadow: "0 10px 24px rgba(0,0,0,0.16)",
+  padding: "24px",
+  borderRadius: "24px",
+  background: "#181818",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 10px 24px rgba(0,0,0,0.3)",
   cursor: "pointer",
-  transition: "0.3s",
   overflow: "hidden",
 };
+
 
 const tripTitle = {
   fontSize: "clamp(20px, 3vw, 28px)",
   fontWeight: "900",
   marginBottom: "14px",
-  color: "#111827",
+  color: "#ffffff",
   wordBreak: "break-word",
+};
+
+const infoText = {
+  color: "#d4d4d4",
+  fontSize: "15px",
+  lineHeight: "1.6",
 };
 
 const infoGrid = {
@@ -344,11 +355,6 @@ const infoGrid = {
   marginBottom: "14px",
 };
 
-const infoText = {
-  color: "#334155",
-  fontSize: "15px",
-  lineHeight: "1.5",
-};
 
 const dateRow = {
   display: "flex",
@@ -360,14 +366,14 @@ const dateRow = {
 const dateBadge = {
   padding: "7px 12px",
   borderRadius: "999px",
-  background: "#e0e7ff",
-  color: "#3730a3",
+  background: "#ffffff",
+  color: "#000000",
   fontSize: "12px",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const description = {
-  color: "#475569",
+  color: "#a3a3a3",
   fontSize: "15px",
   lineHeight: "1.7",
   marginTop: "12px",
@@ -381,21 +387,21 @@ const buttonRow = {
 };
 
 const btnBlue = {
-  padding: "10px 15px",
+  padding: "11px 16px",
   borderRadius: "12px",
-  border: "none",
-  background: "#4f46e5",
-  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
 
 const btnGreen = {
-  padding: "10px 15px",
+  padding: "11px 16px",
   borderRadius: "12px",
-  border: "none",
-  background: "#10b981",
-  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
@@ -411,13 +417,15 @@ const placesList = {
   gap: "16px",
 };
 
+
 const placeCard = {
   position: "relative",
-  height: "160px",
-  borderRadius: "20px",
+  height: "170px",
+  borderRadius: "24px",
   overflow: "hidden",
   cursor: "pointer",
-  boxShadow: "0 10px 24px rgba(0,0,0,0.25)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 10px 24px rgba(0,0,0,0.35)",
 };
 
 const placeImg = {

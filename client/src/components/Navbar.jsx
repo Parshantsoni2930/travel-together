@@ -13,7 +13,6 @@ const Navbar = () => {
   useEffect(() => {
     const checkScreen = () => setIsMobile(window.innerWidth <= 900);
     checkScreen();
-
     window.addEventListener("resize", checkScreen);
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
@@ -29,7 +28,6 @@ const Navbar = () => {
 
     loadUser();
     window.addEventListener("userUpdated", loadUser);
-
     return () => window.removeEventListener("userUpdated", loadUser);
   }, []);
 
@@ -51,8 +49,9 @@ const Navbar = () => {
     if (!img) return null;
     if (img.startsWith("http")) return img;
 
-    return `https://travel-together-z3dr.onrender.com${img.startsWith("/") ? img : `/${img}`
-  }`;
+    return `https://travel-together-z3dr.onrender.com${
+      img.startsWith("/") ? img : `/${img}`
+    }`;
   };
 
   const isActive = (path) => location.pathname === path;
@@ -66,29 +65,23 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { label: "🏠 Home", path: "/home" },
-    { label: "➕ Create Trip", path: "/create-trip" },
-    { label: "🧳 My Trips", path: "/my-trips" },
-    { label: "👥 Requests", path: "/requests" },
-    { label: "💬 Chats", path: "/chats" },
-    { label: "✨ AI Planner", path: "/ai-planner", ai: true },
+    { label: "Home", path: "/home" },
+    { label: "Create Trip", path: "/create-trip" },
+    { label: "My Trips", path: "/my-trips" },
+    { label: "Requests", path: "/requests" },
+    { label: "Chats", path: "/chats" },
+    { label: "AI Planner", path: "/ai-planner" },
   ];
 
   return (
     <>
       <nav style={navStyle}>
         <div style={brandBox} onClick={() => navigate("/home")}>
-          <img
-            src="/images/logo.png"
-            alt="Travel Buddy Finder"
-            style={logoStyle}
-          />
+          <div style={logoBox}>TB</div>
 
           <div>
             <h2 style={brandTitle}>Travel Buddy Finder</h2>
-            <p style={brandSub}>
-              Find trips, explore places, and connect with buddies.
-            </p>
+            <p style={brandSub}>Find trips. Meet buddies. Travel smarter.</p>
           </div>
         </div>
 
@@ -99,12 +92,8 @@ const Navbar = () => {
                 key={item.path}
                 to={item.path}
                 style={{
-                  ...(item.ai ? aiLinkStyle : linkStyle),
-                  ...(isActive(item.path)
-                    ? item.ai
-                      ? activeAiLink
-                      : activeLink
-                    : {}),
+                  ...linkStyle,
+                  ...(isActive(item.path) ? activeLink : {}),
                 }}
               >
                 {item.label}
@@ -134,11 +123,7 @@ const Navbar = () => {
           )}
 
           {isMobile && (
-            <button
-              onClick={() => setMenuOpen(true)}
-              style={hamburgerBtn}
-              aria-label="Open menu"
-            >
+            <button onClick={() => setMenuOpen(true)} style={hamburgerBtn}>
               ☰
             </button>
           )}
@@ -150,12 +135,7 @@ const Navbar = () => {
           <div style={mobileMenu} onClick={(e) => e.stopPropagation()}>
             <div style={mobileTop}>
               <div style={brandBox}>
-                <img
-                  src="/images/logo.png"
-                  alt="Travel Buddy Finder"
-                  style={mobileLogo}
-                />
-
+                <div style={mobileLogoBox}>TB</div>
                 <div>
                   <h2 style={mobileTitle}>Travel Buddy Finder</h2>
                   <p style={brandSub}>Find trips & buddies.</p>
@@ -175,7 +155,6 @@ const Navbar = () => {
                   style={{
                     ...mobileLinkBtn,
                     ...(isActive(item.path) ? mobileActive : {}),
-                    ...(item.ai ? mobileAi : {}),
                   }}
                 >
                   <span>{item.label}</span>
@@ -184,7 +163,7 @@ const Navbar = () => {
               ))}
 
               <button onClick={handleLogout} style={mobileLogout}>
-                <span>↪ Logout</span>
+                <span>Logout</span>
                 <span>›</span>
               </button>
             </div>
@@ -197,50 +176,54 @@ const Navbar = () => {
 
 const navStyle = {
   width: "100%",
-  boxSizing: "border-box",
+  minHeight: "92px",
+  padding: "18px 42px",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
   gap: "24px",
-  padding: "18px 42px",
-  minHeight: "95px",
-  background:
-    "linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.96))",
-  borderBottom: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 10px 35px rgba(0,0,0,0.35)",
+  background: "rgba(5, 5, 5, 0.92)",
+  borderBottom: "1px solid rgba(255,255,255,0.12)",
+  boxShadow: "0 12px 35px rgba(0,0,0,0.45)",
   position: "sticky",
   top: 0,
   zIndex: 1000,
-  backdropFilter: "blur(10px)",
+  backdropFilter: "blur(14px)",
 };
 
 const brandBox = {
   display: "flex",
   alignItems: "center",
-  gap: "16px",
+  gap: "14px",
   cursor: "pointer",
   minWidth: "260px",
 };
 
-const logoStyle = {
-  width: "70px",
-  height: "62px",
-  borderRadius: "14px",
-  objectFit: "cover",
-  background: "#020617",
+const logoBox = {
+  width: "56px",
+  height: "56px",
+  borderRadius: "16px",
+  background: "#ffffff",
+  color: "#000000",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: "900",
+  fontSize: "20px",
+  boxShadow: "0 10px 24px rgba(255,255,255,0.12)",
 };
 
 const brandTitle = {
   margin: 0,
-  fontSize: "24px",
+  fontSize: "23px",
   fontWeight: "900",
   color: "#ffffff",
 };
 
 const brandSub = {
-  margin: "4px 0 0",
+  margin: "5px 0 0",
   fontSize: "13px",
-  color: "#cbd5e1",
+  color: "#a3a3a3",
 };
 
 const linksBox = {
@@ -248,60 +231,46 @@ const linksBox = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "14px",
+  gap: "12px",
   flexWrap: "wrap",
 };
 
-
 const linkStyle = {
   textDecoration: "none",
-  color: "#e5e7eb",
+  color: "#d4d4d4",
   fontWeight: "800",
-  fontSize: "15px",
-  padding: "12px 18px",
+  fontSize: "14px",
+  padding: "11px 16px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.06)",
+  background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.1)",
   whiteSpace: "nowrap",
-  transition: "0.3s",
 };
 
 const activeLink = {
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
-  color: "#fff",
-  border: "1px solid transparent",
-  boxShadow: "0 6px 18px rgba(236,72,153,0.35)",
-};
-
-const aiLinkStyle = {
-  ...linkStyle,
-  color: "#fbbf24",
-  border: "1px solid rgba(251,191,36,0.35)",
-};
-
-const activeAiLink = {
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
+  border: "1px solid #ffffff",
 };
 
 const rightStyle = {
+  minWidth: "150px",
   display: "flex",
-  justifyContent: "flex-end",
   alignItems: "center",
-  gap: "14px",
-  minWidth: "160px",
+  justifyContent: "flex-end",
+  gap: "12px",
 };
 
 const profileCircle = {
   width: "50px",
   height: "50px",
   borderRadius: "50%",
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
+  background: "#111111",
+  border: "2px solid rgba(255,255,255,0.75)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
-  border: "2px solid rgba(255,255,255,0.85)",
   overflow: "hidden",
 };
 
@@ -312,17 +281,17 @@ const profileImg = {
 };
 
 const initialText = {
-  color: "#fff",
+  color: "#ffffff",
   fontWeight: "900",
-  fontSize: "21px",
+  fontSize: "20px",
 };
 
 const logoutBtn = {
   padding: "11px 17px",
   borderRadius: "999px",
-  border: "none",
-  background: "linear-gradient(135deg, #ef4444, #f97316)",
-  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.18)",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
@@ -332,8 +301,8 @@ const hamburgerBtn = {
   height: "46px",
   borderRadius: "14px",
   border: "1px solid rgba(255,255,255,0.16)",
-  background: "rgba(255,255,255,0.08)",
-  color: "#fff",
+  background: "#111111",
+  color: "#ffffff",
   fontSize: "25px",
   cursor: "pointer",
 };
@@ -341,9 +310,9 @@ const hamburgerBtn = {
 const overlayStyle = {
   position: "fixed",
   inset: 0,
-  background: "rgba(2,6,23,0.65)",
+  background: "rgba(0,0,0,0.72)",
   zIndex: 999,
-  backdropFilter: "blur(4px)",
+  backdropFilter: "blur(5px)",
 };
 
 const mobileMenu = {
@@ -353,10 +322,9 @@ const mobileMenu = {
   width: "86%",
   maxWidth: "390px",
   height: "100vh",
-  background:
-    "linear-gradient(135deg, rgba(15,23,42,0.98), rgba(2,6,23,0.98))",
+  background: "#050505",
   borderLeft: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "-12px 0 35px rgba(0,0,0,0.45)",
+  boxShadow: "-12px 0 35px rgba(0,0,0,0.55)",
   padding: "20px",
 };
 
@@ -368,17 +336,17 @@ const mobileTop = {
   borderBottom: "1px solid rgba(255,255,255,0.12)",
 };
 
-const mobileLogo = {
-  width: "64px",
-  height: "58px",
+const mobileLogoBox = {
+  ...logoBox,
+  width: "52px",
+  height: "52px",
   borderRadius: "14px",
-  objectFit: "cover",
 };
 
 const mobileTitle = {
   margin: 0,
   fontSize: "19px",
-  color: "#fff",
+  color: "#ffffff",
   fontWeight: "900",
 };
 
@@ -386,10 +354,10 @@ const closeBtn = {
   width: "42px",
   height: "42px",
   borderRadius: "12px",
-  border: "none",
-  background: "rgba(255,255,255,0.08)",
-  color: "#fff",
-  fontSize: "30px",
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "#111111",
+  color: "#ffffff",
+  fontSize: "28px",
   cursor: "pointer",
 };
 
@@ -404,9 +372,9 @@ const mobileLinkBtn = {
   width: "100%",
   padding: "15px 16px",
   borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.1)",
-  background: "rgba(255,255,255,0.06)",
-  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "#111111",
+  color: "#ffffff",
   cursor: "pointer",
   fontWeight: "900",
   fontSize: "16px",
@@ -416,19 +384,15 @@ const mobileLinkBtn = {
 };
 
 const mobileActive = {
-  background: "linear-gradient(135deg, rgba(79,70,229,0.7), rgba(236,72,153,0.55))",
-  border: "1px solid rgba(255,255,255,0.18)",
-};
-
-const mobileAi = {
-  color: "#fbbf24",
+  background: "#ffffff",
+  color: "#000000",
 };
 
 const mobileLogout = {
   ...mobileLinkBtn,
   marginTop: "14px",
-  color: "#ff6b6b",
-  border: "1px solid rgba(239,68,68,0.35)",
+  background: "#ffffff",
+  color: "#000000",
 };
 
 export default Navbar;
