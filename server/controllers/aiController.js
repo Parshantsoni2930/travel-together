@@ -5,15 +5,11 @@ const getAISuggestions = async (req, res) => {
     const { query, history = [] } = req.body;
 
     if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({
-        message: "Gemini API key missing on server",
-      });
+      return res.status(500).json({ message: "Gemini API key missing" });
     }
 
     if (!query || !query.trim()) {
-      return res.status(400).json({
-        message: "Query is required",
-      });
+      return res.status(400).json({ message: "Query is required" });
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY.trim());
@@ -24,35 +20,43 @@ const getAISuggestions = async (req, res) => {
       .join("\n");
 
     const prompt = `
-You are an AI travel planner inside a Travel Buddy Finder website.
+You are a friendly AI travel planner inside Travel Buddy Finder.
+Create practical trip plans with itinerary, budget, routes, food, places and safety tips.
+Keep it clear and useful.
 
-Your job:
-- Make helpful travel plans
-- Suggest itinerary day-wise
-- Suggest budget, routes, places, food and safety tips
-- Keep answer clear, useful and friendly
-- Use simple language
-- Avoid very long paragraphs
-
-Conversation so far:
+Conversation:
 ${conversation}
 
 User request:
 ${query}
 
-Give the best travel plan:
+AI:
 `;
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
+    const modelNames = [
+      "gemini-2.0-flash",
+      "gemini-2.0-flash-lite",
+      "gemini-pro",
+    ];
 
-    const result = await model.generateContent(prompt);
-    const reply = result.response.text();
+    let reply = null;
+    let lastError = null;
 
-    return res.status(200).json({
-      reply,
-    });
+    for (const modelName of modelNames) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const result = await model.generateContent(prompt);
+        reply = result.response.text();
+        break;
+      } catch (err) {
+        lastError = err;
+        console.log(`${modelName} failed:`, err.message);
+      }
+    }
+
+    if (!reply) throw lastError;
+
+    return res.status(200).json({ reply });
   } catch (error) {
     console.log("GEMINI ERROR:", error.message);
 
