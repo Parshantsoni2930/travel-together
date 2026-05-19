@@ -344,29 +344,29 @@ const Home = () => {
 const pageStyle = {
   width: "100%",
   minHeight: "100vh",
-  padding: "20px 24px",
+  padding: "14px 18px",
   background:
-    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.18), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.14), transparent 25%), #050505",
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.14), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.10), transparent 25%), #050505",
   boxSizing: "border-box",
 };
 
 const heroSection = {
   position: "relative",
-  minHeight: "300px",
-  borderRadius: "30px",
+  minHeight: "260px",
+  borderRadius: "26px",
   overflow: "hidden",
-  marginBottom: "20px",
-  padding: "30px",
+  marginBottom: "16px",
+  padding: "24px",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "22px",
+  gap: "18px",
   backgroundImage:
     "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
   backgroundSize: "cover",
   backgroundPosition: "center",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.5)",
-  border: "1px solid rgba(255,255,255,0.12)",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
+  border: "1px solid rgba(255,255,255,0.08)",
 };
 
 
@@ -396,26 +396,26 @@ const heroBadge = {
 };
 
 const heroTitle = {
-  fontSize: "clamp(34px, 5vw, 56px)",
+  fontSize: "clamp(28px, 4vw, 50px)",
   lineHeight: "1",
   fontWeight: "900",
   color: "#ffffff",
-  marginBottom: "12px",
+  marginBottom: "10px",
 };
 
 const heroText = {
-  fontSize: "16px",
+  fontSize: "15px",
   lineHeight: "1.6",
   color: "#d4d4d4",
-  maxWidth: "640px",
+  maxWidth: "580px",
 };
 
 
 const heroButtons = {
   display: "flex",
-  gap: "12px",
+  gap: "10px",
   flexWrap: "wrap",
-  marginTop: "20px",
+  marginTop: "16px",
 };
 
 const primaryHeroBtn = {
@@ -443,12 +443,12 @@ const secondaryHeroBtn = {
 const heroGlassCard = {
   position: "relative",
   zIndex: 1,
-  minWidth: "230px",
-  padding: "18px",
-  borderRadius: "22px",
-  background: "rgba(255,255,255,0.1)",
-  border: "1px solid rgba(255,255,255,0.18)",
-  backdropFilter: "blur(12px)",
+  minWidth: "210px",
+  padding: "16px",
+  borderRadius: "18px",
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.12)",
+  backdropFilter: "blur(10px)",
   color: "#fff",
 };
 
@@ -520,12 +520,12 @@ const clearBtn = {
 };
 
 const categoriesSection = {
-  padding: "26px",
-  borderRadius: "30px",
+  padding: "18px",
+  borderRadius: "24px",
   background: "#111111",
-  border: "1px solid rgba(255,255,255,0.1)",
-  boxShadow: "0 14px 40px rgba(0,0,0,0.4)",
-  marginBottom: "26px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 10px 28px rgba(0,0,0,0.35)",
+  marginBottom: "16px",
 };
 
 const sectionHeader = {
@@ -533,49 +533,49 @@ const sectionHeader = {
 };
 
 const sectionTitle = {
-  fontSize: "30px",
+  fontSize: "24px",
   fontWeight: "900",
   color: "#ffffff",
   margin: 0,
 };
 
 const sectionSubtitle = {
-  color: "#a3a3a3",
-  marginTop: "8px",
-  lineHeight: "1.6",
+  color: "#9ca3af",
+  marginTop: "5px",
+  lineHeight: "1.5",
+  fontSize: "14px",
 };
 
 const categoriesGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-  gap: "14px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+  gap: "10px",
 };
 
 const categoryCard = {
-  padding: "20px",
-  borderRadius: "22px",
+  padding: "15px",
+  borderRadius: "18px",
   background: "#181818",
-  border: "1px solid rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.06)",
   cursor: "pointer",
-  boxShadow: "0 10px 24px rgba(0,0,0,0.25)",
 };
 
 const categoryIcon = {
-  fontSize: "28px",
-  marginBottom: "12px",
+  fontSize: "22px",
+  marginBottom: "8px",
 };
 
 const categoryName = {
   color: "#ffffff",
-  fontSize: "18px",
+  fontSize: "15px",
   fontWeight: "900",
   margin: 0,
 };
 
 const categoryCount = {
   color: "#a3a3a3",
-  fontSize: "13px",
-  marginTop: "7px",
+  fontSize: "12px",
+  marginTop: "4px",
 };
 
 const mainGrid = {
@@ -585,28 +585,28 @@ const mainGrid = {
   width: "100%",
   alignItems: "start",
 };
-
 const sectionBox = {
-  padding: "26px",
-  borderRadius: "30px",
+  padding: "18px",
+  borderRadius: "24px",
   background: "#111111",
-  border: "1px solid rgba(255,255,255,0.1)",
-  boxShadow: "0 14px 40px rgba(0,0,0,0.4)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 10px 28px rgba(0,0,0,0.35)",
   color: "#ffffff",
   overflow: "hidden",
 };
 
+
 const tripList = {
   display: "flex",
   flexDirection: "column",
-  gap: "18px",
+  gap: "12px",
 };
 
 const tripCard = {
-  padding: "24px",
-  borderRadius: "26px",
+  padding: "18px",
+  borderRadius: "20px",
   background: "#181818",
-  border: "1px solid rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.06)",
   cursor: "pointer",
 };
 
@@ -636,10 +636,10 @@ const typeBadge = {
 
 const description = {
   color: "#a3a3a3",
-  fontSize: "15px",
-  lineHeight: "1.7",
-  marginTop: "12px",
-  marginBottom: "16px",
+  fontSize: "14px",
+  lineHeight: "1.6",
+  marginTop: "10px",
+  marginBottom: "12px",
 };
 
 const infoGrid = {
@@ -715,17 +715,16 @@ const emptyText = {
 const placesList = {
   display: "flex",
   flexDirection: "column",
-  gap: "16px",
+  gap: "12px",
 };
 
 const placeCard = {
   position: "relative",
-  height: "175px",
-  borderRadius: "24px",
+  height: "145px",
+  borderRadius: "18px",
   overflow: "hidden",
   cursor: "pointer",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 12px 28px rgba(0,0,0,0.35)",
+  border: "1px solid rgba(255,255,255,0.06)",
 };
 
 const placeImg = {
@@ -765,25 +764,25 @@ const statsSection = {
 };
 
 const statBox = {
-  padding: "26px",
-  borderRadius: "26px",
+  padding: "18px",
+  borderRadius: "20px",
   background: "#111111",
-  border: "1px solid rgba(255,255,255,0.1)",
+  border: "1px solid rgba(255,255,255,0.08)",
   textAlign: "center",
-  boxShadow: "0 14px 40px rgba(0,0,0,0.35)",
 };
 
 const statNumber = {
-  fontSize: "34px",
+  fontSize: "26px",
   fontWeight: "900",
   color: "#ffffff",
   margin: 0,
 };
 
 const statText = {
-  color: "#a3a3a3",
-  marginTop: "8px",
-  fontWeight: "800",
+  color: "#9ca3af",
+  marginTop: "5px",
+  fontWeight: "700",
+  fontSize: "13px",
 };
 
 export default Home;
