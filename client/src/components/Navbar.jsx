@@ -225,11 +225,11 @@ const logoBox = {
 };
 
 const logoImg = {
-  width: "220px",
-  height: "220px",
+  width: "320px",
+  height: "320px",
   objectFit: "contain",
   background: "transparent",
-  transform: "scale(1.4)",
+  transform: "scale(2.8)",
 };
 
 const brandTitle = {
