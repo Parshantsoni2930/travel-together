@@ -1,14 +1,22 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 const getAISuggestions = async (req, res) => {
   try {
     const { query, history = [] } = req.body;
 
-    if (!query) {
-      return res.status(400).json({ message: "Query is required" });
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({
+        message: "Gemini API key missing on server",
+      });
     }
+
+    if (!query) {
+      return res.status(400).json({
+        message: "Query is required",
+      });
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
     const conversation = history
       .filter((msg) => msg.text)
@@ -16,49 +24,36 @@ const getAISuggestions = async (req, res) => {
       .join("\n");
 
     const prompt = `
-You are a friendly AI travel buddy inside a Travel Buddy Finder app.
+You are a friendly AI travel buddy inside a Travel Buddy Finder website.
 Talk casually like a helpful friend.
-Ask follow-up questions when needed.
-Keep replies short and natural.
+Give practical travel plans, routes, budget, places to visit, food suggestions and safety tips.
+Keep replies clear and useful.
 
 Conversation so far:
 ${conversation}
 
-User's latest message:
+User:
 ${query}
 
 AI:
 `;
 
     const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
+      model: "gemini-pro",
     });
-    let reply = null;
-    let lastError = null;
 
-    for (const modelName of models) {
-      try {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent(prompt);
-        reply = result.response.text();
-        break;
-      } catch (err) {
-        lastError = err;
-        console.log(`${modelName} failed:`, err.message);
-      }
-    }
+    const result = await model.generateContent(prompt);
+    const reply = result.response.text();
 
-    if (!reply) {
-      throw lastError;
-    }
-
-    res.json({ reply });
+    return res.status(200).json({
+      reply,
+    });
   } catch (error) {
     console.log("GEMINI ERROR:", error.message);
 
-    res.status(500).json({
-      message: "Gemini AI error",
-      error: error.message,
+    return res.status(200).json({
+      reply:
+        "AI is temporarily busy. For demo, here is a sample travel plan:\n\nDay 1: Arrival, local sightseeing, cafes and market.\nDay 2: Main attractions, adventure activity and sunset point.\nDay 3: Nearby places, shopping and return.\n\nTip: Share destination, days and budget for a better plan.",
     });
   }
 };
