@@ -195,26 +195,30 @@ const Navbar = () => {
 };
 
 const navStyle = {
+  width: "100%",
+  boxSizing: "border-box",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "22px",
-  padding: "18px 34px",
-  minHeight: "92px",
+  gap: "24px",
+  padding: "18px 42px",
+  minHeight: "95px",
   background:
-    "linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.95))",
-  borderBottom: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.38)",
+    "linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.96))",
+  borderBottom: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 10px 35px rgba(0,0,0,0.35)",
   position: "sticky",
   top: 0,
-  zIndex: 100,
+  zIndex: 1000,
+  backdropFilter: "blur(10px)",
 };
 
 const brandBox = {
   display: "flex",
   alignItems: "center",
-  gap: "14px",
+  gap: "16px",
   cursor: "pointer",
+  minWidth: "260px",
 };
 
 const logoStyle = {
@@ -239,30 +243,33 @@ const brandSub = {
 };
 
 const linksBox = {
+  flex: 1,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "11px",
+  gap: "14px",
   flexWrap: "wrap",
 };
+
 
 const linkStyle = {
   textDecoration: "none",
   color: "#e5e7eb",
   fontWeight: "800",
-  fontSize: "14px",
-  padding: "10px 14px",
+  fontSize: "15px",
+  padding: "12px 18px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.08)",
-  border: "1px solid rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.06)",
+  border: "1px solid rgba(255,255,255,0.1)",
   whiteSpace: "nowrap",
+  transition: "0.3s",
 };
 
 const activeLink = {
   background: "linear-gradient(135deg, #4f46e5, #ec4899)",
   color: "#fff",
   border: "1px solid transparent",
-  boxShadow: "0 4px 14px rgba(236,72,153,0.35)",
+  boxShadow: "0 6px 18px rgba(236,72,153,0.35)",
 };
 
 const aiLinkStyle = {
@@ -280,7 +287,8 @@ const rightStyle = {
   display: "flex",
   justifyContent: "flex-end",
   alignItems: "center",
-  gap: "12px",
+  gap: "14px",
+  minWidth: "160px",
 };
 
 const profileCircle = {
