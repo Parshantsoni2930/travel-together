@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import toast from "react-hot-toast";
+
 const Register = () => {
   const navigate = useNavigate();
 
@@ -23,6 +24,7 @@ const Register = () => {
 
     try {
       await registerUser(formData);
+
       toast.success("Account created!");
       navigate("/login");
     } catch (error) {
@@ -32,16 +34,37 @@ const Register = () => {
 
   return (
     <div style={pageStyle}>
+      <div style={heroPanel}>
+        <div style={heroOverlay}></div>
+
+        <div style={heroContent}>
+          <span style={heroBadge}>
+            Adventure • Travel • Community
+          </span>
+
+          <h1 style={heroTitle}>
+            Start Your Journey
+          </h1>
+
+          <p style={heroText}>
+            Create your account and discover travelers who match your vibe,
+            destination, and travel style.
+          </p>
+        </div>
+      </div>
+
       <div style={authCard}>
         <div style={logoCircle}>🌍</div>
 
         <h2 style={titleStyle}>Create Account</h2>
+
         <p style={subtitleStyle}>
-          Join Travel Buddy Finder and start your journey.
+          Join Travel Buddy Finder and start exploring together.
         </p>
 
         <form onSubmit={handleSubmit}>
           <label style={labelStyle}>Name</label>
+
           <input
             style={inputStyle}
             type="text"
@@ -53,6 +76,7 @@ const Register = () => {
           />
 
           <label style={labelStyle}>Email</label>
+
           <input
             style={inputStyle}
             type="email"
@@ -64,6 +88,7 @@ const Register = () => {
           />
 
           <label style={labelStyle}>Password</label>
+
           <input
             style={inputStyle}
             type="password"
@@ -81,7 +106,10 @@ const Register = () => {
 
         <p style={bottomText}>
           Already have an account?{" "}
-          <button onClick={() => navigate("/login")} style={linkBtn}>
+          <button
+            onClick={() => navigate("/login")}
+            style={linkBtn}
+          >
             Login
           </button>
         </p>
@@ -91,22 +119,87 @@ const Register = () => {
 };
 
 const pageStyle = {
+  width: "100%",
   minHeight: "100vh",
-  display: "flex",
+  display: "grid",
+  gridTemplateColumns: "1.2fr 0.8fr",
   alignItems: "center",
-  justifyContent: "center",
+  gap: "24px",
   padding: "24px",
   background:
-    "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.14), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.10), transparent 25%), #050505",
+  boxSizing: "border-box",
+};
+
+const heroPanel = {
+  position: "relative",
+  minHeight: "calc(100vh - 48px)",
+  borderRadius: "34px",
+  overflow: "hidden",
+  backgroundImage:
+    "url('https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=1600&q=80')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(0,0,0,0.86), rgba(0,0,0,0.48), rgba(0,0,0,0.16))",
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 2,
+  padding: "42px",
+  height: "100%",
+  minHeight: "calc(100vh - 48px)",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
+};
+
+const heroBadge = {
+  display: "inline-block",
+  width: "fit-content",
+  padding: "8px 13px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  color: "#ffffff",
+  fontSize: "12px",
+  fontWeight: "900",
+  marginBottom: "14px",
+};
+
+const heroTitle = {
+  margin: 0,
+  fontSize: "clamp(44px, 7vw, 84px)",
+  fontWeight: "900",
+  lineHeight: "1",
+  color: "#ffffff",
+};
+
+const heroText = {
+  marginTop: "16px",
+  color: "#d4d4d4",
+  fontSize: "16px",
+  lineHeight: "1.7",
+  maxWidth: "620px",
 };
 
 const authCard = {
   width: "100%",
   maxWidth: "430px",
+  justifySelf: "center",
   padding: "28px",
-  borderRadius: "24px",
-  background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.4)",
+  borderRadius: "28px",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
   textAlign: "center",
 };
 
@@ -115,67 +208,73 @@ const logoCircle = {
   height: "62px",
   borderRadius: "50%",
   margin: "0 auto 16px",
-  background: "linear-gradient(135deg, #4f46e5, #ec4899, #f97316)",
+  background: "#ffffff",
+  color: "#000000",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   fontSize: "30px",
-  boxShadow: "0 8px 20px rgba(236,72,153,0.35)",
+  boxShadow: "0 10px 24px rgba(255,255,255,0.12)",
 };
 
 const titleStyle = {
   margin: 0,
-  fontSize: "30px",
+  fontSize: "32px",
   fontWeight: "900",
-  color: "#111827",
+  color: "#ffffff",
 };
 
 const subtitleStyle = {
   margin: "8px 0 22px",
-  color: "#64748b",
+  color: "#9ca3af",
+  fontSize: "14px",
+  lineHeight: "1.6",
 };
 
 const labelStyle = {
   display: "block",
   textAlign: "left",
   marginBottom: "7px",
-  fontWeight: "800",
-  color: "#334155",
+  fontWeight: "900",
+  color: "#ffffff",
+  fontSize: "14px",
 };
 
 const inputStyle = {
   width: "100%",
   boxSizing: "border-box",
-  padding: "13px",
+  padding: "14px",
   marginBottom: "15px",
-  borderRadius: "13px",
-  border: "1px solid #cbd5e1",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.08)",
   outline: "none",
-  background: "#ffffff",
+  background: "#1a1a1a",
+  color: "#ffffff",
+  fontSize: "14px",
 };
 
 const submitBtn = {
   width: "100%",
-  padding: "14px",
-  borderRadius: "14px",
+  padding: "15px",
+  borderRadius: "16px",
   border: "none",
-  background: "linear-gradient(135deg, #f97316, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
-  fontSize: "16px",
+  fontSize: "15px",
   marginTop: "4px",
 };
 
 const bottomText = {
   marginTop: "18px",
-  color: "#475569",
+  color: "#9ca3af",
 };
 
 const linkBtn = {
   border: "none",
   background: "transparent",
-  color: "#4f46e5",
+  color: "#ffffff",
   fontWeight: "900",
   cursor: "pointer",
 };

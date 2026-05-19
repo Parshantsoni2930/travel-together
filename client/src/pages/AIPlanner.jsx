@@ -16,7 +16,7 @@ const AIPlanner = () => {
   const [messages, setMessages] = useState([
     {
       role: "ai",
-      text: "Hey bro 👋 Where are you planning to travel?",
+      text: "Hey traveler 👋 Where are you planning to go?",
     },
   ]);
 
@@ -27,7 +27,7 @@ const AIPlanner = () => {
       setMessages([
         {
           role: "ai",
-          text: `Nice choice 🔥 ${selectedPlace} is a great destination! Click Send and I'll plan it for you.`,
+          text: `Great choice 🔥 ${selectedPlace} is an amazing destination. Click Send and I'll create your trip plan.`,
         },
       ]);
 
@@ -36,19 +36,28 @@ const AIPlanner = () => {
   }, [selectedPlace]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
   }, [messages, loading]);
 
   const typeText = (text) => {
     let i = 0;
 
-    setMessages((prev) => [...prev, { role: "ai", text: "" }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "ai",
+        text: "",
+      },
+    ]);
 
     const interval = setInterval(() => {
       const char = text[i] || "";
 
       setMessages((prev) => {
         const updated = [...prev];
+
         const last = updated[updated.length - 1];
 
         updated[updated.length - 1] = {
@@ -65,13 +74,17 @@ const AIPlanner = () => {
         clearInterval(interval);
         setLoading(false);
       }
-    }, 12);
+    }, 10);
   };
 
   const handleSend = async () => {
     if (!message.trim() || loading) return;
 
-    const userMsg = { role: "user", text: message };
+    const userMsg = {
+      role: "user",
+      text: message,
+    };
+
     const updatedMessages = [...messages, userMsg];
 
     setMessages(updatedMessages);
@@ -84,40 +97,54 @@ const AIPlanner = () => {
         history: updatedMessages,
       });
 
-      typeText(res.data.reply || "Sorry bro, I couldn't understand.");
+      typeText(
+        res.data.reply ||
+          "Sorry, I couldn't understand your request."
+      );
     } catch (error) {
       toast.error("AI response failed. Try again.");
-
       setLoading(false);
     }
   };
 
   return (
     <div style={pageStyle}>
-      <div style={chatBox}>
-        <div style={headerStyle}>
-          <div style={botAvatar}>✨</div>
+      <div style={plannerContainer}>
+        <div style={heroSection}>
+          <div style={heroOverlay}></div>
 
-          <div>
-            <h2 style={titleStyle}>AI Trip Assistant</h2>
-            <p style={subtitleStyle}>
-              Ask for itinerary, budget, routes, places, safety tips & more.
+          <div style={heroContent}>
+            <span style={heroBadge}>
+              AI • Smart Planning • Travel
+            </span>
+
+            <h1 style={heroTitle}>
+              AI Trip Planner
+            </h1>
+
+            <p style={heroText}>
+              Ask for itineraries, budget planning, places to visit,
+              transport, hotels, routes, and hidden gems.
             </p>
           </div>
         </div>
 
         <div style={quickRow}>
-          {["Plan Goa trip", "Budget Manali trip", "3-day Jaipur itinerary"].map(
-            (item) => (
-              <button
-                key={item}
-                style={quickBtn}
-                onClick={() => setMessage(item)}
-              >
-                {item}
-              </button>
-            )
-          )}
+          {[
+            "Plan Goa trip",
+            "Budget Manali trip",
+            "3-day Jaipur itinerary",
+            "Best places in Kashmir",
+            "Cheap Thailand trip",
+          ].map((item) => (
+            <button
+              key={item}
+              style={quickBtn}
+              onClick={() => setMessage(item)}
+            >
+              {item}
+            </button>
+          ))}
         </div>
 
         <div style={messagesBox}>
@@ -127,8 +154,10 @@ const AIPlanner = () => {
               style={{
                 display: "flex",
                 justifyContent:
-                  msg.role === "user" ? "flex-end" : "flex-start",
-                marginBottom: "13px",
+                  msg.role === "user"
+                    ? "flex-end"
+                    : "flex-start",
+                marginBottom: "14px",
               }}
             >
               <div
@@ -136,11 +165,20 @@ const AIPlanner = () => {
                   ...bubbleStyle,
                   background:
                     msg.role === "user"
-                      ? "linear-gradient(135deg, #4f46e5, #7c3aed)"
-                      : "linear-gradient(135deg, #ffffff, #eef2ff)",
-                  color: msg.role === "user" ? "#ffffff" : "#111827",
-                  borderBottomRightRadius: msg.role === "user" ? "4px" : "18px",
-                  borderBottomLeftRadius: msg.role === "user" ? "18px" : "4px",
+                      ? "#ffffff"
+                      : "#181818",
+                  color:
+                    msg.role === "user"
+                      ? "#000000"
+                      : "#ffffff",
+                  borderBottomRightRadius:
+                    msg.role === "user"
+                      ? "4px"
+                      : "18px",
+                  borderBottomLeftRadius:
+                    msg.role === "user"
+                      ? "18px"
+                      : "4px",
                 }}
               >
                 {msg.text}
@@ -149,8 +187,15 @@ const AIPlanner = () => {
           ))}
 
           {loading && (
-            <div style={{ display: "flex", justifyContent: "flex-start" }}>
-              <div style={typingBubble}>AI typing...</div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+              }}
+            >
+              <div style={typingBubble}>
+                AI is thinking...
+              </div>
             </div>
           )}
 
@@ -160,14 +205,22 @@ const AIPlanner = () => {
         <div style={inputRow}>
           <input
             type="text"
-            placeholder="Ask AI to plan your trip..."
+            placeholder="Ask AI to plan your journey..."
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onChange={(e) =>
+              setMessage(e.target.value)
+            }
+            onKeyDown={(e) =>
+              e.key === "Enter" && handleSend()
+            }
             style={inputStyle}
           />
 
-          <button onClick={handleSend} disabled={loading} style={sendBtn}>
+          <button
+            onClick={handleSend}
+            disabled={loading}
+            style={sendBtn}
+          >
             {loading ? "..." : "Send"}
           </button>
         </div>
@@ -177,57 +230,78 @@ const AIPlanner = () => {
 };
 
 const pageStyle = {
-  padding: "24px",
+  width: "100%",
   minHeight: "100vh",
+  padding: "20px",
   background:
-    "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.14), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.10), transparent 25%), #050505",
+  boxSizing: "border-box",
 };
 
-const chatBox = {
-  maxWidth: "900px",
-  height: "calc(100vh - 135px)",
+const plannerContainer = {
+  width: "100%",
+  maxWidth: "1400px",
+  height: "calc(100vh - 40px)",
   margin: "0 auto",
-  borderRadius: "24px",
+  borderRadius: "30px",
   overflow: "hidden",
-  background: "linear-gradient(135deg, #0f172a, #111827)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.45)",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
   display: "flex",
   flexDirection: "column",
 };
 
-const headerStyle = {
-  padding: "18px 20px",
-  display: "flex",
-  alignItems: "center",
-  gap: "12px",
+const heroSection = {
+  position: "relative",
+  minHeight: "240px",
+  padding: "28px",
+  overflow: "hidden",
+  backgroundImage:
+    "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
   background:
-    "linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.95))",
-  borderBottom: "1px solid rgba(255,255,255,0.12)",
+    "linear-gradient(90deg, rgba(0,0,0,0.84), rgba(0,0,0,0.55), rgba(0,0,0,0.25))",
 };
 
-const botAvatar = {
-  width: "48px",
-  height: "48px",
-  borderRadius: "50%",
-  background: "linear-gradient(135deg, #f97316, #ec4899)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: "22px",
-  boxShadow: "0 8px 20px rgba(236,72,153,0.35)",
+const heroContent = {
+  position: "relative",
+  zIndex: 2,
+  maxWidth: "760px",
 };
 
-const titleStyle = {
-  margin: 0,
-  color: "#ffffff",
-  fontSize: "22px",
+const heroBadge = {
+  display: "inline-block",
+  padding: "8px 13px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontSize: "12px",
   fontWeight: "900",
+  marginBottom: "14px",
 };
 
-const subtitleStyle = {
-  margin: "4px 0 0",
-  color: "#cbd5e1",
-  fontSize: "13px",
+const heroTitle = {
+  margin: 0,
+  fontSize: "clamp(38px, 6vw, 74px)",
+  fontWeight: "900",
+  lineHeight: "1",
+  color: "#ffffff",
+};
+
+const heroText = {
+  marginTop: "14px",
+  color: "#d4d4d4",
+  lineHeight: "1.7",
+  fontSize: "15px",
+  maxWidth: "680px",
 };
 
 const quickRow = {
@@ -235,70 +309,72 @@ const quickRow = {
   gap: "10px",
   flexWrap: "wrap",
   padding: "14px 18px",
-  background: "rgba(15,23,42,0.85)",
+  background: "#0b0b0b",
   borderBottom: "1px solid rgba(255,255,255,0.08)",
 };
 
 const quickBtn = {
-  padding: "8px 12px",
+  padding: "9px 14px",
   borderRadius: "999px",
-  border: "1px solid rgba(255,255,255,0.14)",
-  background: "rgba(255,255,255,0.08)",
-  color: "#e5e7eb",
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "#181818",
+  color: "#ffffff",
   cursor: "pointer",
-  fontWeight: "700",
+  fontWeight: "800",
 };
 
 const messagesBox = {
   flex: 1,
   overflowY: "auto",
-  padding: "18px",
+  padding: "22px",
   background:
-    "radial-gradient(circle at top left, rgba(79,70,229,0.22), transparent 35%), radial-gradient(circle at bottom right, rgba(236,72,153,0.18), transparent 30%), #020617",
+    "radial-gradient(circle at top left, rgba(255,255,255,0.03), transparent 35%), #050505",
 };
 
 const bubbleStyle = {
   maxWidth: "72%",
-  padding: "12px 16px",
+  padding: "13px 16px",
   borderRadius: "18px",
-  boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
-  lineHeight: "1.55",
+  lineHeight: "1.6",
   whiteSpace: "pre-wrap",
   wordBreak: "break-word",
+  border: "1px solid rgba(255,255,255,0.06)",
 };
 
 const typingBubble = {
-  padding: "10px 14px",
+  padding: "11px 15px",
   borderRadius: "18px",
-  background: "linear-gradient(135deg, #ffffff, #eef2ff)",
-  color: "#64748b",
-  fontWeight: "700",
+  background: "#181818",
+  color: "#d4d4d4",
+  fontWeight: "800",
+  border: "1px solid rgba(255,255,255,0.06)",
 };
 
 const inputRow = {
-  padding: "14px",
+  padding: "16px",
   display: "flex",
   gap: "10px",
-  background: "rgba(15,23,42,0.98)",
-  borderTop: "1px solid rgba(255,255,255,0.12)",
+  background: "#0b0b0b",
+  borderTop: "1px solid rgba(255,255,255,0.08)",
 };
 
 const inputStyle = {
   flex: 1,
   padding: "14px 16px",
   borderRadius: "999px",
-  border: "1px solid rgba(255,255,255,0.15)",
+  border: "1px solid rgba(255,255,255,0.08)",
   outline: "none",
-  background: "#f8fafc",
-  color: "#111827",
+  background: "#181818",
+  color: "#ffffff",
+  fontSize: "14px",
 };
 
 const sendBtn = {
   padding: "14px 24px",
   borderRadius: "999px",
   border: "none",
-  background: "linear-gradient(135deg, #f97316, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
