@@ -9,7 +9,6 @@ import api from "../services/api";
 import socket from "../services/socket";
 import toast from "react-hot-toast";
 
-
 const Chat = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -23,8 +22,12 @@ const Chat = () => {
 
   const getImageUrl = (img) => {
     if (!img) return null;
+
     if (img.startsWith("http")) return img;
-    return `https://travel-together-z3dr.onrender.com${img.startsWith("/") ? img : `/${img}`}`;
+
+    return `https://travel-together-z3dr.onrender.com${
+      img.startsWith("/") ? img : `/${img}`
+    }`;
   };
 
   const fetchChatUser = async () => {
@@ -46,7 +49,9 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (currentUserId) socket.emit("join", currentUserId);
+    if (currentUserId) {
+      socket.emit("join", currentUserId);
+    }
   }, [currentUserId]);
 
   useEffect(() => {
@@ -58,7 +63,10 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on("receiveMessage", (newMessage) => {
-      if (newMessage.senderId === userId || newMessage.receiverId === userId) {
+      if (
+        newMessage.senderId === userId ||
+        newMessage.receiverId === userId
+      ) {
         setMessages((prev) => [
           ...prev,
           {
@@ -75,11 +83,14 @@ const Chat = () => {
   }, [userId]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
   }, [messages]);
 
   const handleSend = async (e) => {
     e.preventDefault();
+
     if (!text.trim()) return;
 
     try {
@@ -112,6 +123,7 @@ const Chat = () => {
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Delete this message?");
+
     if (!confirmDelete) return;
 
     try {
@@ -130,7 +142,10 @@ const Chat = () => {
     <div style={pageStyle}>
       <div style={chatContainer}>
         <div style={chatHeader}>
-          <button onClick={() => navigate("/chats")} style={backBtn}>
+          <button
+            onClick={() => navigate("/chats")}
+            style={backBtn}
+          >
             ←
           </button>
 
@@ -139,18 +154,32 @@ const Chat = () => {
             onClick={() => navigate(`/user/${userId}`)}
           >
             {userImage ? (
-              <img src={userImage} alt={userName} style={avatarImg} />
+              <img
+                src={userImage}
+                alt={userName}
+                style={avatarImg}
+              />
             ) : (
-              <span style={avatarText}>{userInitial}</span>
+              <span style={avatarText}>
+                {userInitial}
+              </span>
             )}
           </div>
 
           <div style={{ flex: 1 }}>
-            <h3 style={headerName}>{userName}</h3>
-            <p style={onlineText}>● Online</p>
+            <h3 style={headerName}>
+              {userName}
+            </h3>
+
+            <p style={onlineText}>
+              ● Online
+            </p>
           </div>
 
-          <button onClick={() => navigate(`/user/${userId}`)} style={profileBtn}>
+          <button
+            onClick={() => navigate(`/user/${userId}`)}
+            style={profileBtn}
+          >
             Profile
           </button>
         </div>
@@ -158,15 +187,20 @@ const Chat = () => {
         <div style={messagesBox}>
           {messages.length === 0 ? (
             <div style={emptyBox}>
-              <h3 style={{ margin: 0 }}>No messages yet 💬</h3>
-              <p style={{ margin: "8px 0 0", color: "#cbd5e1" }}>
+              <h3 style={emptyTitle}>
+                No messages yet 💬
+              </h3>
+
+              <p style={emptyText}>
                 Start the conversation.
               </p>
             </div>
           ) : (
             messages.map((msg) => {
               const senderId =
-                typeof msg.sender === "object" ? msg.sender?._id : msg.sender;
+                typeof msg.sender === "object"
+                  ? msg.sender?._id
+                  : msg.sender;
 
               const isMe = senderId === currentUserId;
 
@@ -175,7 +209,9 @@ const Chat = () => {
                   key={msg._id}
                   style={{
                     display: "flex",
-                    justifyContent: isMe ? "flex-end" : "flex-start",
+                    justifyContent: isMe
+                      ? "flex-end"
+                      : "flex-start",
                     marginBottom: "12px",
                   }}
                 >
@@ -183,23 +219,33 @@ const Chat = () => {
                     style={{
                       ...bubbleStyle,
                       background: isMe
-                        ? "linear-gradient(135deg, #4f46e5, #7c3aed)"
-                        : "linear-gradient(135deg, #ffffff, #eef2ff)",
-                      color: isMe ? "#ffffff" : "#111827",
-                      borderBottomRightRadius: isMe ? "4px" : "18px",
-                      borderBottomLeftRadius: isMe ? "18px" : "4px",
+                        ? "#ffffff"
+                        : "#181818",
+                      color: isMe
+                        ? "#000000"
+                        : "#ffffff",
+                      borderBottomRightRadius: isMe
+                        ? "4px"
+                        : "18px",
+                      borderBottomLeftRadius: isMe
+                        ? "18px"
+                        : "4px",
                     }}
                   >
                     <span>{msg.text}</span>
 
-                    {isMe && msg._id && msg._id.length > 10 && (
-                      <button
-                        onClick={() => handleDelete(msg._id)}
-                        style={deleteBtn}
-                      >
-                        Delete
-                      </button>
-                    )}
+                    {isMe &&
+                      msg._id &&
+                      msg._id.length > 10 && (
+                        <button
+                          onClick={() =>
+                            handleDelete(msg._id)
+                          }
+                          style={deleteBtn}
+                        >
+                          Delete
+                        </button>
+                      )}
                   </div>
                 </div>
               );
@@ -209,16 +255,24 @@ const Chat = () => {
           <div ref={bottomRef} />
         </div>
 
-        <form onSubmit={handleSend} style={inputBar}>
+        <form
+          onSubmit={handleSend}
+          style={inputBar}
+        >
           <input
             type="text"
             placeholder="Type a message..."
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) =>
+              setText(e.target.value)
+            }
             style={inputStyle}
           />
 
-          <button type="submit" style={sendBtn}>
+          <button
+            type="submit"
+            style={sendBtn}
+          >
             Send
           </button>
         </form>
@@ -228,57 +282,61 @@ const Chat = () => {
 };
 
 const pageStyle = {
-  minHeight: "100vh",
-  padding: "24px",
+  width: "100%",
+  height: "100vh",
+  padding: "20px",
   background:
-    "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.14), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.10), transparent 25%), #050505",
+  boxSizing: "border-box",
 };
 
 const chatContainer = {
-  maxWidth: "900px",
-  height: "calc(100vh - 135px)",
+  width: "100%",
+  maxWidth: "1400px",
+  height: "calc(100vh - 40px)",
   margin: "0 auto",
-  borderRadius: "22px",
+  borderRadius: "30px",
   overflow: "hidden",
-  background: "linear-gradient(135deg, #0f172a, #111827)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.45)",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
   display: "flex",
   flexDirection: "column",
 };
 
 const chatHeader = {
-  height: "74px",
-  padding: "0 18px",
+  height: "82px",
+  padding: "0 22px",
   display: "flex",
   alignItems: "center",
-  gap: "12px",
-  background:
-    "linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.95))",
-  borderBottom: "1px solid rgba(255,255,255,0.12)",
+  gap: "14px",
+  background: "#0b0b0b",
+  borderBottom: "1px solid rgba(255,255,255,0.08)",
 };
 
 const backBtn = {
-  width: "38px",
-  height: "38px",
+  width: "42px",
+  height: "42px",
   borderRadius: "50%",
-  border: "none",
-  background: "rgba(255,255,255,0.1)",
-  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "#181818",
+  color: "#ffffff",
   fontSize: "22px",
   cursor: "pointer",
+  fontWeight: "900",
 };
 
 const avatarBox = {
-  width: "48px",
-  height: "48px",
+  width: "56px",
+  height: "56px",
   borderRadius: "50%",
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
+  background: "#ffffff",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   overflow: "hidden",
   cursor: "pointer",
-  border: "2px solid rgba(255,255,255,0.8)",
+  flexShrink: 0,
 };
 
 const avatarImg = {
@@ -288,96 +346,108 @@ const avatarImg = {
 };
 
 const avatarText = {
-  color: "#fff",
+  color: "#000000",
   fontWeight: "900",
-  fontSize: "20px",
+  fontSize: "24px",
 };
 
 const headerName = {
   margin: 0,
   color: "#ffffff",
-  fontSize: "18px",
+  fontSize: "20px",
   fontWeight: "900",
 };
 
 const onlineText = {
-  margin: "3px 0 0",
+  margin: "4px 0 0",
   color: "#22c55e",
   fontSize: "12px",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const profileBtn = {
-  padding: "9px 14px",
-  borderRadius: "999px",
+  padding: "11px 16px",
+  borderRadius: "14px",
   border: "none",
-  background: "linear-gradient(135deg, #f97316, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const messagesBox = {
   flex: 1,
-  padding: "18px",
+  padding: "22px",
   overflowY: "auto",
   background:
-    "radial-gradient(circle at top left, rgba(79,70,229,0.22), transparent 35%), radial-gradient(circle at bottom right, rgba(236,72,153,0.18), transparent 30%), #020617",
+    "radial-gradient(circle at top left, rgba(255,255,255,0.03), transparent 35%), #050505",
 };
 
 const bubbleStyle = {
   maxWidth: "65%",
-  padding: "11px 14px",
+  padding: "13px 16px",
   borderRadius: "18px",
-  boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
-  lineHeight: "1.45",
+  lineHeight: "1.5",
   wordBreak: "break-word",
+  border: "1px solid rgba(255,255,255,0.06)",
 };
 
 const deleteBtn = {
   marginLeft: "10px",
-  padding: "4px 7px",
+  padding: "4px 8px",
   borderRadius: "999px",
   border: "none",
-  background: "rgba(255,255,255,0.18)",
-  color: "#fff",
+  background: "rgba(0,0,0,0.08)",
+  color: "inherit",
   cursor: "pointer",
   fontSize: "10px",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const inputBar = {
-  padding: "14px",
+  padding: "16px",
   display: "flex",
   gap: "10px",
-  background: "rgba(15,23,42,0.98)",
-  borderTop: "1px solid rgba(255,255,255,0.12)",
+  background: "#0b0b0b",
+  borderTop: "1px solid rgba(255,255,255,0.08)",
 };
 
 const inputStyle = {
   flex: 1,
-  padding: "13px 15px",
+  padding: "14px 16px",
   borderRadius: "999px",
-  border: "1px solid rgba(255,255,255,0.15)",
+  border: "1px solid rgba(255,255,255,0.08)",
   outline: "none",
-  background: "#f8fafc",
-  color: "#111827",
+  background: "#181818",
+  color: "#ffffff",
+  fontSize: "14px",
 };
 
 const sendBtn = {
-  padding: "13px 20px",
+  padding: "14px 22px",
   borderRadius: "999px",
   border: "none",
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
 
 const emptyBox = {
   textAlign: "center",
-  color: "#fff",
-  padding: "80px 20px",
+  color: "#ffffff",
+  padding: "100px 20px",
+};
+
+const emptyTitle = {
+  margin: 0,
+  fontSize: "24px",
+  fontWeight: "900",
+};
+
+const emptyText = {
+  marginTop: "10px",
+  color: "#9ca3af",
 };
 
 export default Chat;

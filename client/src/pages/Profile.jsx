@@ -20,7 +20,9 @@ const Profile = () => {
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "";
+
     if (imagePath.startsWith("http")) return imagePath;
+
     return `https://travel-together-z3dr.onrender.com${
       imagePath.startsWith("/") ? imagePath : `/${imagePath}`
     }`;
@@ -122,21 +124,27 @@ const Profile = () => {
 
   return (
     <div style={pageStyle}>
-      <div style={profileCard}>
-        <div style={headerSection}>
-          <div>
-            <h1 style={titleStyle}>My Profile</h1>
-            <p style={subtitleStyle}>
-              Manage your travel identity, interests, and buddy connections.
-            </p>
-          </div>
+      <div style={heroSection}>
+        <div style={heroOverlay}></div>
 
-          <div style={statsPill}>
-            <span style={statsNumber}>{friendsCount}</span>
-            <span style={statsText}>Friends</span>
-          </div>
+        <div style={heroContent}>
+          <span style={heroBadge}>Identity • Travel • Connections</span>
+
+          <h1 style={heroTitle}>My Profile</h1>
+
+          <p style={heroText}>
+            Manage your travel identity, interests, and buddy connections.
+          </p>
         </div>
 
+        <div style={statsGlass}>
+          <span style={statsLabel}>Travel Buddies</span>
+
+          <h2 style={statsValue}>{friendsCount}</h2>
+        </div>
+      </div>
+
+      <div style={profileCard}>
         <div style={topSection}>
           <div style={imageBox}>
             {preview ? (
@@ -163,11 +171,15 @@ const Profile = () => {
                       />
                     ) : (
                       <div style={friendFallback}>
-                        {friend.name ? friend.name.charAt(0).toUpperCase() : "U"}
+                        {friend.name
+                          ? friend.name.charAt(0).toUpperCase()
+                          : "U"}
                       </div>
                     )}
 
-                    <span style={friendName}>{friend.name || "User"}</span>
+                    <span style={friendName}>
+                      {friend.name || "User"}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -182,6 +194,7 @@ const Profile = () => {
         <form onSubmit={handleSubmit} style={formStyle}>
           <div style={fileBox}>
             <label style={fileLabel}>Profile Image</label>
+
             <input
               type="file"
               accept="image/*"
@@ -193,6 +206,7 @@ const Profile = () => {
           <div style={formGrid}>
             <div>
               <label style={labelStyle}>Name</label>
+
               <input
                 style={inputStyle}
                 type="text"
@@ -205,8 +219,9 @@ const Profile = () => {
 
             <div>
               <label style={labelStyle}>Email</label>
+
               <input
-                style={{ ...inputStyle, background: "#e5e7eb" }}
+                style={disabledInput}
                 type="email"
                 name="email"
                 value={formData.email}
@@ -216,6 +231,7 @@ const Profile = () => {
 
             <div>
               <label style={labelStyle}>Age</label>
+
               <input
                 style={inputStyle}
                 type="text"
@@ -228,6 +244,7 @@ const Profile = () => {
 
             <div>
               <label style={labelStyle}>Gender</label>
+
               <input
                 style={inputStyle}
                 type="text"
@@ -240,6 +257,7 @@ const Profile = () => {
 
             <div>
               <label style={labelStyle}>City</label>
+
               <input
                 style={inputStyle}
                 type="text"
@@ -252,6 +270,7 @@ const Profile = () => {
 
             <div>
               <label style={labelStyle}>Interests</label>
+
               <input
                 style={inputStyle}
                 type="text"
@@ -265,6 +284,7 @@ const Profile = () => {
 
           <div>
             <label style={labelStyle}>Bio</label>
+
             <textarea
               style={textareaStyle}
               name="bio"
@@ -286,77 +306,121 @@ const Profile = () => {
 const pageStyle = {
   width: "100%",
   minHeight: "100vh",
-  padding: "36px 42px",
+  padding: "20px",
   background:
-    "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.14), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.10), transparent 25%), #050505",
   boxSizing: "border-box",
+};
+
+const heroSection = {
+  position: "relative",
+  width: "100%",
+  maxWidth: "1400px",
+  minHeight: "280px",
+  margin: "0 auto 16px",
+  padding: "28px",
+  borderRadius: "30px",
+  overflow: "hidden",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  gap: "18px",
+  backgroundImage:
+    "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
+  border: "1px solid rgba(255,255,255,0.08)",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(0,0,0,0.82), rgba(0,0,0,0.52), rgba(0,0,0,0.22))",
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 2,
+  maxWidth: "760px",
+};
+
+const heroBadge = {
+  display: "inline-block",
+  padding: "8px 13px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontSize: "12px",
+  fontWeight: "900",
+  marginBottom: "14px",
+};
+
+const heroTitle = {
+  margin: 0,
+  fontSize: "clamp(38px, 6vw, 70px)",
+  fontWeight: "900",
+  lineHeight: "1",
+  color: "#ffffff",
+};
+
+const heroText = {
+  marginTop: "12px",
+  color: "#d4d4d4",
+  lineHeight: "1.7",
+  fontSize: "15px",
+  maxWidth: "650px",
+};
+
+const statsGlass = {
+  position: "relative",
+  zIndex: 2,
+  padding: "20px 24px",
+  borderRadius: "24px",
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  backdropFilter: "blur(12px)",
+  color: "#ffffff",
+  minWidth: "180px",
+};
+
+const statsLabel = {
+  display: "block",
+  fontSize: "13px",
+  color: "#d4d4d4",
+  marginBottom: "6px",
+  fontWeight: "800",
+};
+
+const statsValue = {
+  margin: 0,
+  fontSize: "38px",
+  fontWeight: "900",
 };
 
 const profileCard = {
   width: "100%",
-  maxWidth: "1150px",
+  maxWidth: "1400px",
   margin: "0 auto",
-  padding: "34px",
-  borderRadius: "30px",
-  background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.38)",
+  padding: "24px",
+  borderRadius: "28px",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
   boxSizing: "border-box",
-  color: "#111827",
-};
-
-const headerSection = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "20px",
-  marginBottom: "28px",
-  flexWrap: "wrap",
-};
-
-const titleStyle = {
-  margin: 0,
-  fontSize: "38px",
-  fontWeight: "900",
-  color: "#111827",
-};
-
-const subtitleStyle = {
-  marginTop: "8px",
-  color: "#64748b",
-  fontSize: "16px",
-  lineHeight: "1.6",
-};
-
-const statsPill = {
-  padding: "14px 22px",
-  borderRadius: "999px",
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
-  color: "#fff",
-  display: "flex",
-  alignItems: "center",
-  gap: "10px",
-  boxShadow: "0 10px 22px rgba(79,70,229,0.35)",
-};
-
-const statsNumber = {
-  fontSize: "24px",
-  fontWeight: "900",
-};
-
-const statsText = {
-  fontSize: "14px",
-  fontWeight: "800",
 };
 
 const topSection = {
   display: "flex",
   alignItems: "center",
-  gap: "32px",
-  marginBottom: "30px",
-  padding: "26px",
-  borderRadius: "26px",
-  background: "#ffffff",
-  boxShadow: "0 10px 26px rgba(15,23,42,0.12)",
+  gap: "28px",
+  marginBottom: "26px",
+  padding: "22px",
+  borderRadius: "24px",
+  background: "#181818",
+  border: "1px solid rgba(255,255,255,0.06)",
   flexWrap: "wrap",
 };
 
@@ -367,23 +431,23 @@ const imageBox = {
 };
 
 const profileImg = {
-  width: "180px",
-  height: "180px",
+  width: "170px",
+  height: "170px",
   borderRadius: "50%",
   objectFit: "cover",
-  border: "5px solid #4f46e5",
+  border: "4px solid #ffffff",
 };
 
 const avatarFallback = {
-  width: "180px",
-  height: "180px",
+  width: "170px",
+  height: "170px",
   borderRadius: "50%",
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
+  background: "#ffffff",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  color: "#fff",
-  fontSize: "68px",
+  color: "#000000",
+  fontSize: "62px",
   fontWeight: "900",
 };
 
@@ -396,7 +460,7 @@ const friendsTitle = {
   margin: "0 0 16px",
   fontSize: "24px",
   fontWeight: "900",
-  color: "#111827",
+  color: "#ffffff",
 };
 
 const friendsList = {
@@ -415,7 +479,7 @@ const friendImg = {
   height: "60px",
   borderRadius: "50%",
   objectFit: "cover",
-  border: "3px solid #4f46e5",
+  border: "3px solid #ffffff",
   margin: "0 auto",
 };
 
@@ -423,8 +487,8 @@ const friendFallback = {
   width: "60px",
   height: "60px",
   borderRadius: "50%",
-  background: "linear-gradient(135deg, #6366f1, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -438,7 +502,7 @@ const friendName = {
   marginTop: "8px",
   fontSize: "12px",
   fontWeight: "800",
-  color: "#374151",
+  color: "#d4d4d4",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
@@ -446,7 +510,7 @@ const friendName = {
 
 const noFriendsText = {
   fontSize: "15px",
-  color: "#6b7280",
+  color: "#9ca3af",
   lineHeight: "1.6",
 };
 
@@ -462,42 +526,48 @@ const fileLabel = {
   display: "block",
   marginBottom: "8px",
   fontWeight: "900",
-  color: "#334155",
+  color: "#ffffff",
 };
 
 const fileInput = {
   width: "100%",
   padding: "12px",
   borderRadius: "14px",
-  border: "1px dashed #94a3b8",
-  background: "#ffffff",
-  color: "#334155",
+  border: "1px dashed rgba(255,255,255,0.12)",
+  background: "#181818",
+  color: "#ffffff",
 };
 
 const formGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-  gap: "16px",
+  gap: "14px",
 };
 
 const labelStyle = {
   display: "block",
   marginBottom: "8px",
   fontWeight: "900",
-  color: "#334155",
+  color: "#ffffff",
 };
 
 const inputStyle = {
   width: "100%",
   boxSizing: "border-box",
-  padding: "15px",
-  marginBottom: "16px",
+  padding: "14px",
+  marginBottom: "14px",
   borderRadius: "14px",
-  border: "1px solid #cbd5e1",
+  border: "1px solid rgba(255,255,255,0.08)",
   outline: "none",
-  fontSize: "15px",
-  background: "#fff",
-  color: "#111827",
+  fontSize: "14px",
+  background: "#1a1a1a",
+  color: "#ffffff",
+};
+
+const disabledInput = {
+  ...inputStyle,
+  background: "#0b0b0b",
+  color: "#9ca3af",
 };
 
 const textareaStyle = {
@@ -508,16 +578,15 @@ const textareaStyle = {
 
 const submitBtn = {
   width: "100%",
-  padding: "16px",
-  borderRadius: "18px",
+  padding: "15px",
+  borderRadius: "16px",
   border: "none",
-  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
   fontWeight: "900",
-  fontSize: "17px",
+  fontSize: "15px",
   cursor: "pointer",
   marginTop: "8px",
-  boxShadow: "0 10px 24px rgba(79,70,229,0.32)",
 };
 
 export default Profile;

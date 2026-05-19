@@ -31,11 +31,8 @@ const CreateTrip = () => {
 
     try {
       setLoading(true);
-
       await createTrip(formData);
-
       toast.success("Trip created successfully!");
-
       navigate("/my-trips");
     } catch (error) {
       toast.error(error.response?.data?.message || "Error creating trip");
@@ -47,11 +44,13 @@ const CreateTrip = () => {
   return (
     <div style={pageStyle}>
       <div style={heroSection}>
-        <h1 style={heroTitle}>Plan Your Next Adventure ✈️</h1>
+        <span style={heroBadge}>Create • Share • Connect</span>
+
+        <h1 style={heroTitle}>Plan Your Next Adventure</h1>
 
         <p style={heroText}>
-          Share your travel plans, discover companions, and make unforgettable
-          memories with travel buddies.
+          Share your travel plan, discover companions, and connect with people
+          going to the same destination.
         </p>
       </div>
 
@@ -60,8 +59,7 @@ const CreateTrip = () => {
           <h2 style={titleStyle}>Create Trip</h2>
 
           <p style={subtitleStyle}>
-            Fill in your trip details and connect with people traveling to the
-            same destination.
+            Add your destination, budget, dates, and travel vibe.
           </p>
         </div>
 
@@ -169,72 +167,88 @@ const CreateTrip = () => {
 const pageStyle = {
   width: "100%",
   minHeight: "100vh",
-  padding: "36px 42px",
+  padding: "20px",
   background:
-    "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.14), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.10), transparent 25%), #050505",
   boxSizing: "border-box",
 };
 
 const heroSection = {
   width: "100%",
-  maxWidth: "1200px",
-  margin: "0 auto 28px",
-  padding: "36px",
-  borderRadius: "30px",
-  background:
-    "linear-gradient(135deg, rgba(79,70,229,0.92), rgba(236,72,153,0.85), rgba(249,115,22,0.82))",
+  maxWidth: "1400px",
+  margin: "0 auto 16px",
+  padding: "28px",
+  borderRadius: "28px",
+  backgroundImage:
+    "linear-gradient(rgba(0,0,0,0.58), rgba(0,0,0,0.58)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
   color: "#fff",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
+  border: "1px solid rgba(255,255,255,0.08)",
+};
+
+const heroBadge = {
+  display: "inline-block",
+  padding: "8px 13px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontSize: "12px",
+  fontWeight: "900",
+  marginBottom: "14px",
 };
 
 const heroTitle = {
   margin: 0,
-  fontSize: "44px",
+  fontSize: "clamp(32px, 5vw, 58px)",
   fontWeight: "900",
-  lineHeight: "1.1",
+  lineHeight: "1",
 };
 
 const heroText = {
-  marginTop: "14px",
-  fontSize: "17px",
+  marginTop: "12px",
+  fontSize: "15px",
   lineHeight: "1.7",
-  color: "#f8fafc",
-  maxWidth: "760px",
+  color: "#d4d4d4",
+  maxWidth: "700px",
 };
 
 const cardStyle = {
   width: "100%",
-  maxWidth: "1200px",
+  maxWidth: "1400px",
   margin: "0 auto",
-  padding: "34px",
-  borderRadius: "30px",
-  background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
+  padding: "24px",
+  borderRadius: "28px",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
   boxSizing: "border-box",
 };
 
 const headerStyle = {
-  marginBottom: "28px",
+  marginBottom: "18px",
 };
 
 const titleStyle = {
   margin: 0,
-  fontSize: "34px",
+  fontSize: "28px",
   fontWeight: "900",
-  color: "#111827",
+  color: "#ffffff",
 };
 
 const subtitleStyle = {
-  marginTop: "10px",
-  color: "#64748b",
-  fontSize: "16px",
+  marginTop: "8px",
+  color: "#9ca3af",
+  fontSize: "14px",
   lineHeight: "1.6",
 };
 
 const formGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-  gap: "18px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gap: "14px",
 };
 
 const fullWidth = {
@@ -243,41 +257,41 @@ const fullWidth = {
 
 const labelStyle = {
   display: "block",
-  marginBottom: "8px",
-  fontWeight: "900",
-  color: "#334155",
+  marginBottom: "7px",
+  fontWeight: "800",
+  color: "#ffffff",
+  fontSize: "14px",
 };
 
 const inputStyle = {
   width: "100%",
   boxSizing: "border-box",
-  padding: "15px",
-  borderRadius: "15px",
-  border: "1px solid #cbd5e1",
+  padding: "14px",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.08)",
   outline: "none",
-  background: "#ffffff",
-  color: "#111827",
-  fontSize: "15px",
+  background: "#1a1a1a",
+  color: "#ffffff",
+  fontSize: "14px",
 };
 
 const textareaStyle = {
   ...inputStyle,
-  minHeight: "140px",
+  minHeight: "120px",
   resize: "vertical",
 };
 
 const submitBtn = {
   width: "100%",
-  marginTop: "26px",
-  padding: "16px",
-  borderRadius: "18px",
+  marginTop: "18px",
+  padding: "15px",
+  borderRadius: "16px",
   border: "none",
-  background: "linear-gradient(135deg, #f97316, #ec4899)",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
-  fontSize: "17px",
-  boxShadow: "0 10px 24px rgba(236,72,153,0.32)",
+  fontSize: "15px",
 };
 
 export default CreateTrip;
