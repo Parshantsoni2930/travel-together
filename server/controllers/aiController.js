@@ -10,36 +10,41 @@ const getAISuggestions = async (req, res) => {
       });
     }
 
-    if (!query) {
+    if (!query || !query.trim()) {
       return res.status(400).json({
         message: "Query is required",
       });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY.trim());
 
     const conversation = history
-      .filter((msg) => msg.text)
+      .filter((msg) => msg?.text)
       .map((msg) => `${msg.role === "user" ? "User" : "AI"}: ${msg.text}`)
       .join("\n");
 
     const prompt = `
-You are a friendly AI travel buddy inside a Travel Buddy Finder website.
-Talk casually like a helpful friend.
-Give practical travel plans, routes, budget, places to visit, food suggestions and safety tips.
-Keep replies clear and useful.
+You are an AI travel planner inside a Travel Buddy Finder website.
+
+Your job:
+- Make helpful travel plans
+- Suggest itinerary day-wise
+- Suggest budget, routes, places, food and safety tips
+- Keep answer clear, useful and friendly
+- Use simple language
+- Avoid very long paragraphs
 
 Conversation so far:
 ${conversation}
 
-User:
+User request:
 ${query}
 
-AI:
+Give the best travel plan:
 `;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-1.5-flash",
     });
 
     const result = await model.generateContent(prompt);
@@ -51,9 +56,9 @@ AI:
   } catch (error) {
     console.log("GEMINI ERROR:", error.message);
 
-    return res.status(200).json({
-      reply:
-        "AI is temporarily busy. For demo, here is a sample travel plan:\n\nDay 1: Arrival, local sightseeing, cafes and market.\nDay 2: Main attractions, adventure activity and sunset point.\nDay 3: Nearby places, shopping and return.\n\nTip: Share destination, days and budget for a better plan.",
+    return res.status(500).json({
+      message: "Gemini AI error",
+      error: error.message,
     });
   }
 };
