@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllTrips } from "../services/tripService";
 import { sendRequest } from "../services/requestService";
+import { getStats } from "../services/statsService";
 import toast from "react-hot-toast";
 
 const touristPlaces = [
@@ -42,6 +43,14 @@ const Home = () => {
   const [trips, setTrips] = useState([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
+
+  const [stats, setStats] = useState({
+    usersCount: 0,
+    tripsCount: 0,
+    requestsCount: 0,
+    destinationsCount: 0,
+  });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,6 +64,19 @@ const Home = () => {
     };
 
     fetchTrips();
+  }, []);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await getStats();
+        setStats(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchStats();
   }, []);
 
   const filteredTrips = trips.filter((trip) => {
@@ -92,9 +114,7 @@ const Home = () => {
         <div style={heroContent}>
           <span style={heroBadge}>Explore • Connect • Travel</span>
 
-          <h1 style={heroTitle}>
-            Find Your Perfect Travel Buddy
-          </h1>
+          <h1 style={heroTitle}>Find Your Perfect Travel Buddy</h1>
 
           <p style={heroText}>
             Discover trips, explore destinations, and connect with travelers who
@@ -107,7 +127,11 @@ const Home = () => {
             </button>
 
             <button
-              onClick={() => document.getElementById("latest-trips")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() =>
+                document
+                  .getElementById("latest-trips")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
               style={secondaryHeroBtn}
             >
               Explore Trips
@@ -158,7 +182,9 @@ const Home = () => {
       <section style={categoriesSection}>
         <div style={sectionHeader}>
           <h2 style={sectionTitle}>Top Categories</h2>
-          <p style={sectionSubtitle}>Choose your travel style and find matching trips.</p>
+          <p style={sectionSubtitle}>
+            Choose your travel style and find matching trips.
+          </p>
         </div>
 
         <div style={categoriesGrid}>
@@ -170,7 +196,9 @@ const Home = () => {
             >
               <div style={categoryIcon}>{cat.icon}</div>
               <h3 style={categoryName}>{cat.name}</h3>
-              <p style={categoryCount}>{getCategoryCount(cat.name)} trips available</p>
+              <p style={categoryCount}>
+                {getCategoryCount(cat.name)} trips available
+              </p>
             </div>
           ))}
         </div>
@@ -180,7 +208,9 @@ const Home = () => {
         <section style={sectionBox} id="latest-trips">
           <div style={sectionHeader}>
             <h2 style={sectionTitle}>Latest Trips</h2>
-            <p style={sectionSubtitle}>Fresh travel plans from people around you.</p>
+            <p style={sectionSubtitle}>
+              Fresh travel plans from people around you.
+            </p>
           </div>
 
           <div style={tripList}>
@@ -220,8 +250,12 @@ const Home = () => {
                   </div>
 
                   <div style={dateRow}>
-                    <span style={dateBadge}>Created: {formatDate(trip.createdAt)}</span>
-                    <span style={dateBadge}>End: {formatDate(trip.endDate)}</span>
+                    <span style={dateBadge}>
+                      Created: {formatDate(trip.createdAt)}
+                    </span>
+                    <span style={dateBadge}>
+                      End: {formatDate(trip.endDate)}
+                    </span>
                   </div>
 
                   <div style={buttonRow}>
@@ -254,7 +288,9 @@ const Home = () => {
         <aside style={sectionBox}>
           <div style={sectionHeader}>
             <h2 style={sectionTitle}>Explore Places</h2>
-            <p style={sectionSubtitle}>Tap any place to open AI trip planner.</p>
+            <p style={sectionSubtitle}>
+              Tap any place to open AI trip planner.
+            </p>
           </div>
 
           <div style={placesList}>
@@ -282,22 +318,22 @@ const Home = () => {
 
       <section style={statsSection}>
         <div style={statBox}>
-          <h2 style={statNumber}>2500+</h2>
+          <h2 style={statNumber}>{stats.usersCount}+</h2>
           <p style={statText}>Happy Travelers</p>
         </div>
 
         <div style={statBox}>
-          <h2 style={statNumber}>{trips.length}+</h2>
+          <h2 style={statNumber}>{stats.tripsCount}+</h2>
           <p style={statText}>Trips Created</p>
         </div>
 
         <div style={statBox}>
-          <h2 style={statNumber}>1200+</h2>
+          <h2 style={statNumber}>{stats.requestsCount}+</h2>
           <p style={statText}>Buddy Requests</p>
         </div>
 
         <div style={statBox}>
-          <h2 style={statNumber}>25+</h2>
+          <h2 style={statNumber}>{stats.destinationsCount}+</h2>
           <p style={statText}>Destinations</p>
         </div>
       </section>

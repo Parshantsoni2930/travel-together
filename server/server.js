@@ -42,6 +42,7 @@ app.use("/api/trips", require("./routes/tripRoutes"));
 app.use("/api/requests", require("./routes/requestRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
 app.use("/api/ai", require("./routes/aiRoutes"));
+app.use("/api/stats", require("./routes/statsRoutes"));
 
 // Static uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
