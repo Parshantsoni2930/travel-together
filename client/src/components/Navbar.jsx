@@ -208,28 +208,28 @@ const navStyle = {
 const brandBox = {
   display: "flex",
   alignItems: "center",
-  gap: "6px",
+  gap: "0px",
   cursor: "pointer",
-  minWidth: "340px",
-  marginLeft: "-10px",
+  minWidth: "360px",
+  marginLeft: "-18px",
 };
 
 const logoBox = {
-  width: "100px",
-  height: "100px",
+  width: "72px",
+  height: "72px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  overflow: "hidden",
+  overflow: "visible",
   flexShrink: 0,
 };
 
 const logoImg = {
-  width: "100%",
-  height: "100%",
+  width: "140px",
+  height: "140px",
   objectFit: "contain",
   background: "transparent",
-  transform: "scale(1.35)",
+  transform: "translateY(2px)",
 };
 
 const brandTitle = {
