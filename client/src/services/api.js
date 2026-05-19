@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://travel-together-z3dr.onrender.com",
+  baseURL: "https://travel-together-z3dr.onrender.com/api",
 });
 
 // token automatically add hoga
