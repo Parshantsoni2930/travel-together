@@ -208,15 +208,15 @@ const navStyle = {
 const brandBox = {
   display: "flex",
   alignItems: "center",
-  gap: "24px",
+  gap: "30px",
   cursor: "pointer",
   minWidth: "430px",
   marginLeft: "0px",
 };
 
 const logoBox = {
-  width: "110px",
-  height: "78px",
+  width: "150px",
+  height: "98px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
