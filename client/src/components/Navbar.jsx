@@ -215,8 +215,8 @@ const brandBox = {
 };
 
 const logoBox = {
-  width: "86px",
-  height: "86px",
+  width: "100px",
+  height: "100px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
