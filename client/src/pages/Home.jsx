@@ -15,6 +15,7 @@ const touristPlaces = [
   { name: "Andaman", image: "/images/andaman.jpg", summary: "Island beaches." },
   { name: "Darjeeling", image: "/images/darjeeling.jpg", summary: "Tea gardens." },
   { name: "Kerala", image: "/images/kerala.jpg", summary: "Backwaters & greenery." },
+  { name: "Zainabad", image: "/images/zainabad.jpg", summary: "SIET", },
 ];
 
 const formatDate = (date) => {
