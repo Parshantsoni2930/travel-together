@@ -344,7 +344,7 @@ const Home = () => {
 const pageStyle = {
   width: "100%",
   minHeight: "100vh",
-  padding: "26px",
+  padding: "20px 24px",
   background:
     "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.18), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.14), transparent 25%), #050505",
   boxSizing: "border-box",
@@ -352,22 +352,23 @@ const pageStyle = {
 
 const heroSection = {
   position: "relative",
-  minHeight: "180px",
-  borderRadius: "34px",
+  minHeight: "300px",
+  borderRadius: "30px",
   overflow: "hidden",
-  marginBottom: "26px",
-  padding: "42px",
+  marginBottom: "20px",
+  padding: "30px",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "26px",
+  gap: "22px",
   backgroundImage:
     "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
   backgroundSize: "cover",
   backgroundPosition: "center",
-  boxShadow: "0 22px 60px rgba(0,0,0,0.55)",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.5)",
   border: "1px solid rgba(255,255,255,0.12)",
 };
+
 
 const heroOverlay = {
   position: "absolute",
@@ -384,36 +385,37 @@ const heroContent = {
 
 const heroBadge = {
   display: "inline-block",
-  padding: "9px 15px",
+  padding: "8px 13px",
   borderRadius: "999px",
   background: "rgba(255,255,255,0.12)",
   border: "1px solid rgba(255,255,255,0.18)",
   color: "#fff",
-  fontSize: "13px",
+  fontSize: "12px",
   fontWeight: "900",
-  marginBottom: "18px",
+  marginBottom: "14px",
 };
 
 const heroTitle = {
-  fontSize: "clamp(42px, 6vw, 76px)",
+  fontSize: "clamp(34px, 5vw, 56px)",
   lineHeight: "1",
   fontWeight: "900",
   color: "#ffffff",
-  marginBottom: "18px",
+  marginBottom: "12px",
 };
 
 const heroText = {
-  fontSize: "18px",
-  lineHeight: "1.8",
+  fontSize: "16px",
+  lineHeight: "1.6",
   color: "#d4d4d4",
-  maxWidth: "680px",
+  maxWidth: "640px",
 };
+
 
 const heroButtons = {
   display: "flex",
-  gap: "14px",
+  gap: "12px",
   flexWrap: "wrap",
-  marginTop: "28px",
+  marginTop: "20px",
 };
 
 const primaryHeroBtn = {
@@ -441,9 +443,9 @@ const secondaryHeroBtn = {
 const heroGlassCard = {
   position: "relative",
   zIndex: 1,
-  minWidth: "260px",
-  padding: "22px",
-  borderRadius: "24px",
+  minWidth: "230px",
+  padding: "18px",
+  borderRadius: "22px",
   background: "rgba(255,255,255,0.1)",
   border: "1px solid rgba(255,255,255,0.18)",
   backdropFilter: "blur(12px)",
