@@ -34,9 +34,9 @@ const CreateTrip = () => {
 
       await createTrip(formData);
 
-      toast.success("Trip created!");
+      toast.success("Trip created successfully!");
 
-      navigate("/my-trips"); // 👈 better UX
+      navigate("/my-trips");
     } catch (error) {
       toast.error(error.response?.data?.message || "Error creating trip");
     } finally {
@@ -46,29 +46,44 @@ const CreateTrip = () => {
 
   return (
     <div style={pageStyle}>
+      <div style={heroSection}>
+        <h1 style={heroTitle}>Plan Your Next Adventure ✈️</h1>
+
+        <p style={heroText}>
+          Share your travel plans, discover companions, and make unforgettable
+          memories with travel buddies.
+        </p>
+      </div>
+
       <div style={cardStyle}>
         <div style={headerStyle}>
-          <h2 style={titleStyle}>Create Trip ✈️</h2>
+          <h2 style={titleStyle}>Create Trip</h2>
+
           <p style={subtitleStyle}>
-            Add your travel plan and find a buddy for your journey.
+            Fill in your trip details and connect with people traveling to the
+            same destination.
           </p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label style={labelStyle}>Destination</label>
-          <input
-            style={inputStyle}
-            type="text"
-            name="destination"
-            placeholder="e.g. Goa, Manali, Jaipur"
-            value={formData.destination}
-            onChange={handleChange}
-            required
-          />
+          <div style={formGrid}>
+            <div style={fullWidth}>
+              <label style={labelStyle}>Destination</label>
 
-          <div style={rowStyle}>
-            <div style={{ flex: 1 }}>
+              <input
+                style={inputStyle}
+                type="text"
+                name="destination"
+                placeholder="e.g. Goa, Manali, Jaipur"
+                value={formData.destination}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div>
               <label style={labelStyle}>Start Date</label>
+
               <input
                 style={inputStyle}
                 type="date"
@@ -79,8 +94,9 @@ const CreateTrip = () => {
               />
             </div>
 
-            <div style={{ flex: 1 }}>
+            <div>
               <label style={labelStyle}>End Date</label>
+
               <input
                 style={inputStyle}
                 type="date"
@@ -90,50 +106,59 @@ const CreateTrip = () => {
                 required
               />
             </div>
+
+            <div>
+              <label style={labelStyle}>Budget</label>
+
+              <input
+                style={inputStyle}
+                type="text"
+                name="budget"
+                placeholder="e.g. 5000 or 5k"
+                value={formData.budget}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Travel Type</label>
+
+              <select
+                style={inputStyle}
+                name="travelType"
+                value={formData.travelType}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select travel type</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Beach">Beach</option>
+                <option value="Mountains">Mountains</option>
+                <option value="Temple">Temple</option>
+                <option value="Trekking">Trekking</option>
+                <option value="City">City</option>
+                <option value="Road Trip">Road Trip</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div style={fullWidth}>
+              <label style={labelStyle}>Description</label>
+
+              <textarea
+                style={textareaStyle}
+                name="description"
+                placeholder="Tell people about your travel plans, vibe, budget, expectations..."
+                value={formData.description}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
 
-          <label style={labelStyle}>Budget</label>
-          <input
-            style={inputStyle}
-            type="text"
-            name="budget"
-            placeholder="e.g. 5000 or 5k"
-            value={formData.budget}
-            onChange={handleChange}
-            required
-          />
-
-          <label style={labelStyle}>Travel Type</label>
-          <select
-            style={inputStyle}
-            name="travelType"
-            value={formData.travelType}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select travel type</option>
-            <option value="Adventure">Adventure</option>
-            <option value="Beach">Beach</option>
-            <option value="Mountains">Mountains</option>
-            <option value="Temple">Temple</option>
-            <option value="Trekking">Trekking</option>
-            <option value="City">City</option>
-            <option value="Road Trip">Road Trip</option>
-            <option value="Other">Other</option>
-          </select>
-
-          <label style={labelStyle}>Description</label>
-          <textarea
-            style={{ ...inputStyle, minHeight: "110px", resize: "vertical" }}
-            name="description"
-            placeholder="Tell people about your trip plan..."
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-
           <button type="submit" style={submitBtn} disabled={loading}>
-            {loading ? "Creating..." : "Create Trip"}
+            {loading ? "Creating Trip..." : "Create Trip"}
           </button>
         </form>
       </div>
@@ -142,72 +167,117 @@ const CreateTrip = () => {
 };
 
 const pageStyle = {
+  width: "100%",
   minHeight: "100vh",
-  padding: "28px",
+  padding: "36px 42px",
   background:
     "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
+  boxSizing: "border-box",
+};
+
+const heroSection = {
+  width: "100%",
+  maxWidth: "1200px",
+  margin: "0 auto 28px",
+  padding: "36px",
+  borderRadius: "30px",
+  background:
+    "linear-gradient(135deg, rgba(79,70,229,0.92), rgba(236,72,153,0.85), rgba(249,115,22,0.82))",
+  color: "#fff",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
+};
+
+const heroTitle = {
+  margin: 0,
+  fontSize: "44px",
+  fontWeight: "900",
+  lineHeight: "1.1",
+};
+
+const heroText = {
+  marginTop: "14px",
+  fontSize: "17px",
+  lineHeight: "1.7",
+  color: "#f8fafc",
+  maxWidth: "760px",
 };
 
 const cardStyle = {
-  maxWidth: "680px",
+  width: "100%",
+  maxWidth: "1200px",
   margin: "0 auto",
-  padding: "26px",
-  borderRadius: "22px",
+  padding: "34px",
+  borderRadius: "30px",
   background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
+  boxSizing: "border-box",
 };
 
 const headerStyle = {
-  marginBottom: "20px",
+  marginBottom: "28px",
 };
 
 const titleStyle = {
   margin: 0,
-  fontSize: "30px",
+  fontSize: "34px",
   fontWeight: "900",
   color: "#111827",
 };
 
 const subtitleStyle = {
-  margin: "8px 0 0",
+  marginTop: "10px",
   color: "#64748b",
+  fontSize: "16px",
+  lineHeight: "1.6",
 };
 
-const rowStyle = {
-  display: "flex",
-  gap: "14px",
+const formGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: "18px",
+};
+
+const fullWidth = {
+  gridColumn: "1 / -1",
 };
 
 const labelStyle = {
   display: "block",
-  marginBottom: "7px",
-  fontWeight: "800",
+  marginBottom: "8px",
+  fontWeight: "900",
   color: "#334155",
 };
 
 const inputStyle = {
   width: "100%",
   boxSizing: "border-box",
-  padding: "13px",
-  marginBottom: "16px",
-  borderRadius: "12px",
+  padding: "15px",
+  borderRadius: "15px",
   border: "1px solid #cbd5e1",
   outline: "none",
   background: "#ffffff",
   color: "#111827",
+  fontSize: "15px",
+};
+
+const textareaStyle = {
+  ...inputStyle,
+  minHeight: "140px",
+  resize: "vertical",
 };
 
 const submitBtn = {
   width: "100%",
-  padding: "14px",
-  borderRadius: "14px",
+  marginTop: "26px",
+  padding: "16px",
+  borderRadius: "18px",
   border: "none",
   background: "linear-gradient(135deg, #f97316, #ec4899)",
   color: "#fff",
   cursor: "pointer",
   fontWeight: "900",
-  fontSize: "16px",
-  boxShadow: "0 8px 18px rgba(236,72,153,0.28)",
+  fontSize: "17px",
+  boxShadow: "0 10px 24px rgba(236,72,153,0.32)",
 };
 
 export default CreateTrip;

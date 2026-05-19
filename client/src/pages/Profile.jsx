@@ -21,7 +21,9 @@ const Profile = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "";
     if (imagePath.startsWith("http")) return imagePath;
-    return `https://travel-together-z3dr.onrender.com${imagePath}`;
+    return `https://travel-together-z3dr.onrender.com${
+      imagePath.startsWith("/") ? imagePath : `/${imagePath}`
+    }`;
   };
 
   const fetchFriends = async () => {
@@ -121,7 +123,19 @@ const Profile = () => {
   return (
     <div style={pageStyle}>
       <div style={profileCard}>
-        <h2 style={titleStyle}>My Profile</h2>
+        <div style={headerSection}>
+          <div>
+            <h1 style={titleStyle}>My Profile</h1>
+            <p style={subtitleStyle}>
+              Manage your travel identity, interests, and buddy connections.
+            </p>
+          </div>
+
+          <div style={statsPill}>
+            <span style={statsNumber}>{friendsCount}</span>
+            <span style={statsText}>Friends</span>
+          </div>
+        </div>
 
         <div style={topSection}>
           <div style={imageBox}>
@@ -135,11 +149,11 @@ const Profile = () => {
           </div>
 
           <div style={friendsBox}>
-            <h3 style={friendsTitle}>Friends ({friendsCount})</h3>
+            <h3 style={friendsTitle}>Travel Buddies</h3>
 
             {friends.length > 0 ? (
               <div style={friendsList}>
-                {friends.slice(0, 6).map((friend) => (
+                {friends.slice(0, 8).map((friend) => (
                   <div key={friend._id} style={friendItem}>
                     {friend.profileImage ? (
                       <img
@@ -153,86 +167,112 @@ const Profile = () => {
                       </div>
                     )}
 
-                    <span style={friendName}>
-                      {friend.name || "User"}
-                    </span>
+                    <span style={friendName}>{friend.name || "User"}</span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p style={noFriendsText}>No friends yet</p>
+              <p style={noFriendsText}>
+                No buddies yet. Send requests from trips and start connecting.
+              </p>
             )}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={fileInput}
-          />
+        <form onSubmit={handleSubmit} style={formStyle}>
+          <div style={fileBox}>
+            <label style={fileLabel}>Profile Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={fileInput}
+            />
+          </div>
 
-          <input
-            style={inputStyle}
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-          />
+          <div style={formGrid}>
+            <div>
+              <label style={labelStyle}>Name</label>
+              <input
+                style={inputStyle}
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            </div>
 
-          <input
-            style={{ ...inputStyle, background: "#e5e7eb" }}
-            type="email"
-            name="email"
-            value={formData.email}
-            disabled
-          />
+            <div>
+              <label style={labelStyle}>Email</label>
+              <input
+                style={{ ...inputStyle, background: "#e5e7eb" }}
+                type="email"
+                name="email"
+                value={formData.email}
+                disabled
+              />
+            </div>
 
-          <input
-            style={inputStyle}
-            type="text"
-            name="age"
-            placeholder="Age"
-            value={formData.age}
-            onChange={handleChange}
-          />
+            <div>
+              <label style={labelStyle}>Age</label>
+              <input
+                style={inputStyle}
+                type="text"
+                name="age"
+                placeholder="Age"
+                value={formData.age}
+                onChange={handleChange}
+              />
+            </div>
 
-          <input
-            style={inputStyle}
-            type="text"
-            name="gender"
-            placeholder="Gender"
-            value={formData.gender}
-            onChange={handleChange}
-          />
+            <div>
+              <label style={labelStyle}>Gender</label>
+              <input
+                style={inputStyle}
+                type="text"
+                name="gender"
+                placeholder="Gender"
+                value={formData.gender}
+                onChange={handleChange}
+              />
+            </div>
 
-          <input
-            style={inputStyle}
-            type="text"
-            name="city"
-            placeholder="City"
-            value={formData.city}
-            onChange={handleChange}
-          />
+            <div>
+              <label style={labelStyle}>City</label>
+              <input
+                style={inputStyle}
+                type="text"
+                name="city"
+                placeholder="City"
+                value={formData.city}
+                onChange={handleChange}
+              />
+            </div>
 
-          <textarea
-            style={{ ...inputStyle, minHeight: "90px", resize: "vertical" }}
-            name="bio"
-            placeholder="Bio"
-            value={formData.bio}
-            onChange={handleChange}
-          />
+            <div>
+              <label style={labelStyle}>Interests</label>
+              <input
+                style={inputStyle}
+                type="text"
+                name="interests"
+                placeholder="Trekking, beaches, road trips"
+                value={formData.interests}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-          <input
-            style={inputStyle}
-            type="text"
-            name="interests"
-            placeholder="Interests"
-            value={formData.interests}
-            onChange={handleChange}
-          />
+          <div>
+            <label style={labelStyle}>Bio</label>
+            <textarea
+              style={textareaStyle}
+              name="bio"
+              placeholder="Tell other travelers about yourself"
+              value={formData.bio}
+              onChange={handleChange}
+            />
+          </div>
 
           <button type="submit" style={submitBtn}>
             Update Profile
@@ -244,35 +284,80 @@ const Profile = () => {
 };
 
 const pageStyle = {
+  width: "100%",
   minHeight: "100vh",
-  padding: "30px",
+  padding: "36px 42px",
   background:
     "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
+  boxSizing: "border-box",
 };
 
 const profileCard = {
-  maxWidth: "720px",
-  margin: "auto",
-  padding: "26px",
-  borderRadius: "22px",
+  width: "100%",
+  maxWidth: "1150px",
+  margin: "0 auto",
+  padding: "34px",
+  borderRadius: "30px",
   background: "linear-gradient(135deg, #f8fafc, #eef2ff)",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.38)",
+  boxSizing: "border-box",
+  color: "#111827",
+};
+
+const headerSection = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "20px",
+  marginBottom: "28px",
+  flexWrap: "wrap",
 };
 
 const titleStyle = {
-  marginTop: 0,
-  marginBottom: "22px",
+  margin: 0,
+  fontSize: "38px",
+  fontWeight: "900",
+  color: "#111827",
+};
+
+const subtitleStyle = {
+  marginTop: "8px",
+  color: "#64748b",
+  fontSize: "16px",
+  lineHeight: "1.6",
+};
+
+const statsPill = {
+  padding: "14px 22px",
+  borderRadius: "999px",
+  background: "linear-gradient(135deg, #4f46e5, #ec4899)",
+  color: "#fff",
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  boxShadow: "0 10px 22px rgba(79,70,229,0.35)",
+};
+
+const statsNumber = {
+  fontSize: "24px",
+  fontWeight: "900",
+};
+
+const statsText = {
+  fontSize: "14px",
+  fontWeight: "800",
 };
 
 const topSection = {
   display: "flex",
   alignItems: "center",
-  gap: "24px",
-  marginBottom: "20px",
-  padding: "18px",
-  borderRadius: "18px",
+  gap: "32px",
+  marginBottom: "30px",
+  padding: "26px",
+  borderRadius: "26px",
   background: "#ffffff",
-  boxShadow: "0 6px 18px rgba(15,23,42,0.12)",
+  boxShadow: "0 10px 26px rgba(15,23,42,0.12)",
+  flexWrap: "wrap",
 };
 
 const imageBox = {
@@ -282,73 +367,77 @@ const imageBox = {
 };
 
 const profileImg = {
-  width: "135px",
-  height: "135px",
+  width: "180px",
+  height: "180px",
   borderRadius: "50%",
   objectFit: "cover",
-  border: "4px solid #4f46e5",
+  border: "5px solid #4f46e5",
 };
 
 const avatarFallback = {
-  width: "135px",
-  height: "135px",
+  width: "180px",
+  height: "180px",
   borderRadius: "50%",
   background: "linear-gradient(135deg, #4f46e5, #ec4899)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   color: "#fff",
-  fontSize: "50px",
+  fontSize: "68px",
   fontWeight: "900",
 };
 
 const friendsBox = {
   flex: 1,
+  minWidth: "260px",
 };
 
 const friendsTitle = {
-  margin: "0 0 12px",
-  fontSize: "18px",
+  margin: "0 0 16px",
+  fontSize: "24px",
+  fontWeight: "900",
   color: "#111827",
 };
 
 const friendsList = {
   display: "flex",
-  gap: "12px",
+  gap: "16px",
   flexWrap: "wrap",
 };
 
 const friendItem = {
-  width: "70px",
+  width: "86px",
   textAlign: "center",
 };
 
 const friendImg = {
-  width: "48px",
-  height: "48px",
+  width: "60px",
+  height: "60px",
   borderRadius: "50%",
   objectFit: "cover",
-  border: "2px solid #4f46e5",
+  border: "3px solid #4f46e5",
+  margin: "0 auto",
 };
 
 const friendFallback = {
-  width: "48px",
-  height: "48px",
+  width: "60px",
+  height: "60px",
   borderRadius: "50%",
   background: "linear-gradient(135deg, #6366f1, #ec4899)",
   color: "#fff",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontWeight: "800",
-  margin: "auto",
+  fontWeight: "900",
+  margin: "0 auto",
+  fontSize: "22px",
 };
 
 const friendName = {
   display: "block",
-  marginTop: "5px",
-  fontSize: "11px",
-  fontWeight: "700",
+  marginTop: "8px",
+  fontSize: "12px",
+  fontWeight: "800",
   color: "#374151",
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -356,33 +445,79 @@ const friendName = {
 };
 
 const noFriendsText = {
-  fontSize: "14px",
+  fontSize: "15px",
   color: "#6b7280",
+  lineHeight: "1.6",
+};
+
+const formStyle = {
+  width: "100%",
+};
+
+const fileBox = {
+  marginBottom: "20px",
+};
+
+const fileLabel = {
+  display: "block",
+  marginBottom: "8px",
+  fontWeight: "900",
+  color: "#334155",
 };
 
 const fileInput = {
-  marginBottom: "14px",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "14px",
+  border: "1px dashed #94a3b8",
+  background: "#ffffff",
+  color: "#334155",
+};
+
+const formGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gap: "16px",
+};
+
+const labelStyle = {
+  display: "block",
+  marginBottom: "8px",
+  fontWeight: "900",
+  color: "#334155",
 };
 
 const inputStyle = {
   width: "100%",
   boxSizing: "border-box",
-  padding: "12px",
-  marginBottom: "12px",
-  borderRadius: "10px",
+  padding: "15px",
+  marginBottom: "16px",
+  borderRadius: "14px",
   border: "1px solid #cbd5e1",
   outline: "none",
+  fontSize: "15px",
+  background: "#fff",
+  color: "#111827",
+};
+
+const textareaStyle = {
+  ...inputStyle,
+  minHeight: "120px",
+  resize: "vertical",
 };
 
 const submitBtn = {
   width: "100%",
-  padding: "12px",
-  borderRadius: "12px",
+  padding: "16px",
+  borderRadius: "18px",
   border: "none",
   background: "linear-gradient(135deg, #4f46e5, #ec4899)",
   color: "#fff",
-  fontWeight: "800",
+  fontWeight: "900",
+  fontSize: "17px",
   cursor: "pointer",
+  marginTop: "8px",
+  boxShadow: "0 10px 24px rgba(79,70,229,0.32)",
 };
 
 export default Profile;

@@ -24,28 +24,41 @@ const AppContent = () => {
     location.pathname === "/" || location.pathname === "/login";
 
   return (
-    <>
+    <div style={appShell}>
       {!hideNavbar && <Navbar />}
 
-      <Routes>
-        <Route path="/" element={<AuthRoute><Register /></AuthRoute>} />
-        <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
+      <main style={mainShell}>
+        <Routes>
+          <Route path="/" element={<AuthRoute><Register /></AuthRoute>} />
+          <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
 
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/chats" element={<ProtectedRoute><Chats /></ProtectedRoute>} />
-        <Route path="/chat/:userId" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-        <Route path="/ai" element={<ProtectedRoute><AIPlanner /></ProtectedRoute>} />
-        <Route path="/ai-planner" element={<ProtectedRoute><AIPlanner /></ProtectedRoute>} />
-        <Route path="/create-trip" element={<ProtectedRoute><CreateTrip /></ProtectedRoute>} />
-        <Route path="/my-trips" element={<ProtectedRoute><MyTrips /></ProtectedRoute>} />
-        <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
-        <Route path="/edit-trip/:id" element={<ProtectedRoute><EditTrip /></ProtectedRoute>} />
-        <Route path="/user/:id" element={<ProtectedRoute><PublicProfile /></ProtectedRoute>} />
-        <Route path="/trip/:id" element={<ProtectedRoute><TripDetails /></ProtectedRoute>} />
-      </Routes>
-    </>
+          <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/chats" element={<ProtectedRoute><Chats /></ProtectedRoute>} />
+          <Route path="/chat/:userId" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+          <Route path="/ai" element={<ProtectedRoute><AIPlanner /></ProtectedRoute>} />
+          <Route path="/ai-planner" element={<ProtectedRoute><AIPlanner /></ProtectedRoute>} />
+          <Route path="/create-trip" element={<ProtectedRoute><CreateTrip /></ProtectedRoute>} />
+          <Route path="/my-trips" element={<ProtectedRoute><MyTrips /></ProtectedRoute>} />
+          <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
+          <Route path="/edit-trip/:id" element={<ProtectedRoute><EditTrip /></ProtectedRoute>} />
+          <Route path="/user/:id" element={<ProtectedRoute><PublicProfile /></ProtectedRoute>} />
+          <Route path="/trip/:id" element={<ProtectedRoute><TripDetails /></ProtectedRoute>} />
+        </Routes>
+      </main>
+    </div>
   );
+};
+
+const appShell = {
+  width: "100%",
+  minHeight: "100vh",
+  background: "#020617",
+};
+
+const mainShell = {
+  width: "100%",
+  minHeight: "calc(100vh - 95px)",
 };
 
 function App() {
