@@ -352,7 +352,7 @@ const pageStyle = {
 
 const heroSection = {
   position: "relative",
-  minHeight: "430px",
+  minHeight: "300px",
   borderRadius: "34px",
   overflow: "hidden",
   marginBottom: "26px",
