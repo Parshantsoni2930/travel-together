@@ -215,8 +215,8 @@ const brandBox = {
 };
 
 const logoBox = {
-  width: "72px",
-  height: "72px",
+  width: "70px",
+  height: "70px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -225,11 +225,11 @@ const logoBox = {
 };
 
 const logoImg = {
-  width: "140px",
-  height: "140px",
+  width: "220px",
+  height: "220px",
   objectFit: "contain",
   background: "transparent",
-  transform: "translateY(2px)",
+  transform: "scale(1.4)",
 };
 
 const brandTitle = {
