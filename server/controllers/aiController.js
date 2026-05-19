@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.AIzaSyBD_y09QN_544olx_ohVoSTg8pT6qwTEWk);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const getAISuggestions = async (req, res) => {
   try {
