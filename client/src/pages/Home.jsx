@@ -15,7 +15,18 @@ const touristPlaces = [
   { name: "Andaman", image: "/images/andaman.jpg", summary: "Island beaches." },
   { name: "Darjeeling", image: "/images/darjeeling.jpg", summary: "Tea gardens." },
   { name: "Kerala", image: "/images/kerala.jpg", summary: "Backwaters & greenery." },
-  { name: "Zainabad", image: "/images/zainabad.jpg", summary: "SIET", },
+  { name: "Zainabad", image: "/images/zainabad.jpg", summary: "SIET" },
+];
+
+const categories = [
+  { name: "Adventure", icon: "🧗" },
+  { name: "Beach", icon: "🏖️" },
+  { name: "Mountains", icon: "🏔️" },
+  { name: "Trekking", icon: "🥾" },
+  { name: "Road Trip", icon: "🚗" },
+  { name: "Temple", icon: "🛕" },
+  { name: "City", icon: "🌆" },
+  { name: "Other", icon: "✨" },
 ];
 
 const formatDate = (date) => {
@@ -69,18 +80,49 @@ const Home = () => {
     }
   };
 
+  const getCategoryCount = (type) => {
+    return trips.filter((trip) => trip.travelType === type).length;
+  };
+
   return (
     <div style={pageStyle}>
       <section style={heroSection}>
-        <div>
-          <h1 style={heroTitle}>Find Your Perfect Travel Buddy 🌍</h1>
+        <div style={heroOverlay}></div>
+
+        <div style={heroContent}>
+          <span style={heroBadge}>Explore • Connect • Travel</span>
+
+          <h1 style={heroTitle}>
+            Find Your Perfect Travel Buddy
+          </h1>
+
           <p style={heroText}>
-            Explore trips, discover places, and connect with travelers who match your vibe.
+            Discover trips, explore destinations, and connect with travelers who
+            match your vibe.
           </p>
+
+          <div style={heroButtons}>
+            <button onClick={() => navigate("/create-trip")} style={primaryHeroBtn}>
+              Create Trip
+            </button>
+
+            <button
+              onClick={() => document.getElementById("latest-trips")?.scrollIntoView({ behavior: "smooth" })}
+              style={secondaryHeroBtn}
+            >
+              Explore Trips
+            </button>
+          </div>
+        </div>
+
+        <div style={heroGlassCard}>
+          <h3 style={glassTitle}>Popular Now</h3>
+          <p style={glassText}>Manali • Goa • Rishikesh</p>
+          <span style={glassPill}>Live travel plans</span>
         </div>
       </section>
 
-      <div style={searchBar}>
+      <section style={searchBar}>
         <input
           type="text"
           placeholder="Search destination..."
@@ -95,14 +137,11 @@ const Home = () => {
           style={searchSelect}
         >
           <option value="">All Types</option>
-          <option value="Adventure">Adventure</option>
-          <option value="Beach">Beach</option>
-          <option value="Mountains">Mountains</option>
-          <option value="Temple">Temple</option>
-          <option value="Trekking">Trekking</option>
-          <option value="City">City</option>
-          <option value="Road Trip">Road Trip</option>
-          <option value="Other">Other</option>
+          {categories.map((cat) => (
+            <option key={cat.name} value={cat.name}>
+              {cat.name}
+            </option>
+          ))}
         </select>
 
         <button
@@ -114,11 +153,35 @@ const Home = () => {
         >
           Clear
         </button>
-      </div>
+      </section>
+
+      <section style={categoriesSection}>
+        <div style={sectionHeader}>
+          <h2 style={sectionTitle}>Top Categories</h2>
+          <p style={sectionSubtitle}>Choose your travel style and find matching trips.</p>
+        </div>
+
+        <div style={categoriesGrid}>
+          {categories.map((cat) => (
+            <div
+              key={cat.name}
+              style={categoryCard}
+              onClick={() => setTypeFilter(cat.name)}
+            >
+              <div style={categoryIcon}>{cat.icon}</div>
+              <h3 style={categoryName}>{cat.name}</h3>
+              <p style={categoryCount}>{getCategoryCount(cat.name)} trips available</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div style={mainGrid}>
-        <div style={sectionBox}>
-          <h2 style={sectionTitle}>Latest Trips 🧳</h2>
+        <section style={sectionBox} id="latest-trips">
+          <div style={sectionHeader}>
+            <h2 style={sectionTitle}>Latest Trips</h2>
+            <p style={sectionSubtitle}>Fresh travel plans from people around you.</p>
+          </div>
 
           <div style={tripList}>
             {filteredTrips.length === 0 ? (
@@ -130,27 +193,36 @@ const Home = () => {
                   style={tripCard}
                   onClick={() => navigate(`/trip/${trip._id}`)}
                 >
-                  <h3 style={tripTitle}>{trip.destination}</h3>
+                  <div style={tripTop}>
+                    <h3 style={tripTitle}>{trip.destination}</h3>
+                    <span style={typeBadge}>{trip.travelType || "Trip"}</span>
+                  </div>
+
+                  <p style={description}>
+                    {trip.description || "No description added."}
+                  </p>
 
                   <div style={infoGrid}>
-                    <p style={infoText}>
-                      <b>Budget:</b> ₹{trip.budget}
-                    </p>
-                    <p style={infoText}>
-                      <b>Type:</b> {trip.travelType}
-                    </p>
-                    <p style={infoText}>
-                      <b>By:</b> {trip.user?.name || "Unknown"}
-                    </p>
+                    <div style={infoBox}>
+                      <span style={infoLabel}>Budget</span>
+                      <b>₹{trip.budget || "Not added"}</b>
+                    </div>
+
+                    <div style={infoBox}>
+                      <span style={infoLabel}>Start</span>
+                      <b>{formatDate(trip.startDate)}</b>
+                    </div>
+
+                    <div style={infoBox}>
+                      <span style={infoLabel}>By</span>
+                      <b>{trip.user?.name || "Unknown"}</b>
+                    </div>
                   </div>
 
                   <div style={dateRow}>
-                    <span style={dateBadge}>📅 Created: {formatDate(trip.createdAt)}</span>
-                    <span style={dateBadge}>🗓️ Start: {formatDate(trip.startDate)}</span>
-                    <span style={dateBadge}>⏳ End: {formatDate(trip.endDate)}</span>
+                    <span style={dateBadge}>Created: {formatDate(trip.createdAt)}</span>
+                    <span style={dateBadge}>End: {formatDate(trip.endDate)}</span>
                   </div>
-
-                  <p style={description}>{trip.description}</p>
 
                   <div style={buttonRow}>
                     <button
@@ -158,7 +230,7 @@ const Home = () => {
                         e.stopPropagation();
                         navigate(`/user/${trip.user._id}`);
                       }}
-                      style={btnBlue}
+                      style={whiteBtn}
                     >
                       View Profile
                     </button>
@@ -168,7 +240,7 @@ const Home = () => {
                         e.stopPropagation();
                         handleRequest(trip);
                       }}
-                      style={btnGreen}
+                      style={darkBtn}
                     >
                       Send Request
                     </button>
@@ -177,10 +249,13 @@ const Home = () => {
               ))
             )}
           </div>
-        </div>
+        </section>
 
-        <div style={sectionBox}>
-          <h2 style={sectionTitle}>Explore Places 🌍</h2>
+        <aside style={sectionBox}>
+          <div style={sectionHeader}>
+            <h2 style={sectionTitle}>Explore Places</h2>
+            <p style={sectionSubtitle}>Tap any place to open AI trip planner.</p>
+          </div>
 
           <div style={placesList}>
             {touristPlaces.map((place, index) => (
@@ -202,118 +277,285 @@ const Home = () => {
               </div>
             ))}
           </div>
-        </div>
+        </aside>
       </div>
+
+      <section style={statsSection}>
+        <div style={statBox}>
+          <h2 style={statNumber}>2500+</h2>
+          <p style={statText}>Happy Travelers</p>
+        </div>
+
+        <div style={statBox}>
+          <h2 style={statNumber}>{trips.length}+</h2>
+          <p style={statText}>Trips Created</p>
+        </div>
+
+        <div style={statBox}>
+          <h2 style={statNumber}>1200+</h2>
+          <p style={statText}>Buddy Requests</p>
+        </div>
+
+        <div style={statBox}>
+          <h2 style={statNumber}>25+</h2>
+          <p style={statText}>Destinations</p>
+        </div>
+      </section>
     </div>
   );
 };
+
 const pageStyle = {
   width: "100%",
   minHeight: "100vh",
-  padding: "24px",
-  background: "#050505",
+  padding: "26px",
+  background:
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.18), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.14), transparent 25%), #050505",
+  boxSizing: "border-box",
 };
+
 const heroSection = {
-  width: "100%",
-  padding: "38px",
+  position: "relative",
+  minHeight: "430px",
+  borderRadius: "34px",
+  overflow: "hidden",
   marginBottom: "26px",
-  borderRadius: "30px",
-  background: "#111111",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 18px 45px rgba(0,0,0,0.45)",
-  color: "#ffffff",
+  padding: "42px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "26px",
+  backgroundImage:
+    "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  boxShadow: "0 22px 60px rgba(0,0,0,0.55)",
+  border: "1px solid rgba(255,255,255,0.12)",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(0,0,0,0.88), rgba(0,0,0,0.48), rgba(0,0,0,0.18))",
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 1,
+  maxWidth: "760px",
+};
+
+const heroBadge = {
+  display: "inline-block",
+  padding: "9px 15px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontSize: "13px",
+  fontWeight: "900",
+  marginBottom: "18px",
 };
 
 const heroTitle = {
-  fontSize: "clamp(34px, 5vw, 58px)",
-  lineHeight: "1.1",
+  fontSize: "clamp(42px, 6vw, 76px)",
+  lineHeight: "1",
   fontWeight: "900",
-  marginBottom: "14px",
   color: "#ffffff",
+  marginBottom: "18px",
 };
 
 const heroText = {
   fontSize: "18px",
-  lineHeight: "1.7",
-  color: "#a3a3a3",
-  maxWidth: "850px",
+  lineHeight: "1.8",
+  color: "#d4d4d4",
+  maxWidth: "680px",
+};
+
+const heroButtons = {
+  display: "flex",
+  gap: "14px",
+  flexWrap: "wrap",
+  marginTop: "28px",
+};
+
+const primaryHeroBtn = {
+  padding: "15px 24px",
+  borderRadius: "16px",
+  border: "none",
+  background: "#ffffff",
+  color: "#000000",
+  cursor: "pointer",
+  fontWeight: "900",
+  fontSize: "15px",
+};
+
+const secondaryHeroBtn = {
+  padding: "15px 24px",
+  borderRadius: "16px",
+  border: "1px solid rgba(255,255,255,0.18)",
+  background: "rgba(255,255,255,0.08)",
+  color: "#ffffff",
+  cursor: "pointer",
+  fontWeight: "900",
+  fontSize: "15px",
+};
+
+const heroGlassCard = {
+  position: "relative",
+  zIndex: 1,
+  minWidth: "260px",
+  padding: "22px",
+  borderRadius: "24px",
+  background: "rgba(255,255,255,0.1)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  backdropFilter: "blur(12px)",
+  color: "#fff",
+};
+
+const glassTitle = {
+  margin: 0,
+  fontSize: "22px",
+  fontWeight: "900",
+};
+
+const glassText = {
+  marginTop: "10px",
+  color: "#e5e5e5",
+};
+
+const glassPill = {
+  display: "inline-block",
+  marginTop: "16px",
+  padding: "8px 12px",
+  borderRadius: "999px",
+  background: "#fff",
+  color: "#000",
+  fontWeight: "900",
+  fontSize: "12px",
 };
 
 const searchBar = {
-  width: "100%",
   display: "flex",
   gap: "14px",
   marginBottom: "26px",
   flexWrap: "wrap",
   padding: "18px",
-  borderRadius: "22px",
+  borderRadius: "24px",
   background: "#111111",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.4)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  boxShadow: "0 14px 40px rgba(0,0,0,0.4)",
 };
 
 const searchInput = {
   flex: 1,
   minWidth: "240px",
-  padding: "14px",
-  borderRadius: "14px",
+  padding: "15px",
+  borderRadius: "16px",
   border: "1px solid rgba(255,255,255,0.1)",
   outline: "none",
   fontSize: "15px",
-  background: "#181818",
+  background: "#1a1a1a",
   color: "#ffffff",
 };
 
 const searchSelect = {
-  minWidth: "180px",
-  padding: "14px",
-  borderRadius: "14px",
+  minWidth: "190px",
+  padding: "15px",
+  borderRadius: "16px",
   border: "1px solid rgba(255,255,255,0.1)",
   outline: "none",
   fontSize: "15px",
-  background: "#181818",
+  background: "#1a1a1a",
   color: "#ffffff",
 };
 
 const clearBtn = {
-  padding: "14px 22px",
-  borderRadius: "14px",
-  border: "1px solid rgba(255,255,255,0.12)",
+  padding: "15px 24px",
+  borderRadius: "16px",
+  border: "none",
   background: "#ffffff",
   color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
 
+const categoriesSection = {
+  padding: "26px",
+  borderRadius: "30px",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.1)",
+  boxShadow: "0 14px 40px rgba(0,0,0,0.4)",
+  marginBottom: "26px",
+};
+
+const sectionHeader = {
+  marginBottom: "20px",
+};
+
+const sectionTitle = {
+  fontSize: "30px",
+  fontWeight: "900",
+  color: "#ffffff",
+  margin: 0,
+};
+
+const sectionSubtitle = {
+  color: "#a3a3a3",
+  marginTop: "8px",
+  lineHeight: "1.6",
+};
+
+const categoriesGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+  gap: "14px",
+};
+
+const categoryCard = {
+  padding: "20px",
+  borderRadius: "22px",
+  background: "#181818",
+  border: "1px solid rgba(255,255,255,0.08)",
+  cursor: "pointer",
+  boxShadow: "0 10px 24px rgba(0,0,0,0.25)",
+};
+
+const categoryIcon = {
+  fontSize: "28px",
+  marginBottom: "12px",
+};
+
+const categoryName = {
+  color: "#ffffff",
+  fontSize: "18px",
+  fontWeight: "900",
+  margin: 0,
+};
+
+const categoryCount = {
+  color: "#a3a3a3",
+  fontSize: "13px",
+  marginTop: "7px",
+};
+
 const mainGrid = {
   display: "grid",
-  gridTemplateColumns: "2fr 1fr",
+  gridTemplateColumns: "minmax(0, 2fr) minmax(330px, 1fr)",
   gap: "26px",
   width: "100%",
   alignItems: "start",
 };
 
-if (window.innerWidth <= 1000) {
-  mainGrid.gridTemplateColumns = "1fr";
-}
-
 const sectionBox = {
-  width: "100%",
-  padding: "24px",
-  borderRadius: "28px",
+  padding: "26px",
+  borderRadius: "30px",
   background: "#111111",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.4)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  boxShadow: "0 14px 40px rgba(0,0,0,0.4)",
   color: "#ffffff",
   overflow: "hidden",
-  minWidth: 0,
-};
-
-const sectionTitle = {
-  fontSize: "28px",
-  fontWeight: "900",
-  marginBottom: "18px",
-  color: "#ffffff",
 };
 
 const tripList = {
@@ -323,53 +565,35 @@ const tripList = {
 };
 
 const tripCard = {
-  width: "100%",
   padding: "24px",
-  borderRadius: "24px",
+  borderRadius: "26px",
   background: "#181818",
   border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 10px 24px rgba(0,0,0,0.3)",
   cursor: "pointer",
-  overflow: "hidden",
 };
 
-
-const tripTitle = {
-  fontSize: "clamp(20px, 3vw, 28px)",
-  fontWeight: "900",
-  marginBottom: "14px",
-  color: "#ffffff",
-  wordBreak: "break-word",
-};
-
-const infoText = {
-  color: "#d4d4d4",
-  fontSize: "15px",
-  lineHeight: "1.6",
-};
-
-const infoGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-  gap: "10px",
-  marginBottom: "14px",
-};
-
-
-const dateRow = {
+const tripTop = {
   display: "flex",
-  gap: "10px",
-  margin: "12px 0",
+  justifyContent: "space-between",
+  gap: "12px",
   flexWrap: "wrap",
 };
 
-const dateBadge = {
-  padding: "7px 12px",
+const tripTitle = {
+  fontSize: "clamp(22px, 3vw, 30px)",
+  fontWeight: "900",
+  color: "#ffffff",
+  margin: 0,
+};
+
+const typeBadge = {
+  padding: "8px 12px",
   borderRadius: "999px",
   background: "#ffffff",
   color: "#000000",
   fontSize: "12px",
   fontWeight: "900",
+  height: "fit-content",
 };
 
 const description = {
@@ -380,34 +604,73 @@ const description = {
   marginBottom: "16px",
 };
 
+const infoGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+  gap: "10px",
+  marginBottom: "14px",
+};
+
+const infoBox = {
+  padding: "13px",
+  borderRadius: "16px",
+  background: "#0b0b0b",
+  border: "1px solid rgba(255,255,255,0.08)",
+  color: "#fff",
+};
+
+const infoLabel = {
+  display: "block",
+  color: "#737373",
+  fontSize: "12px",
+  marginBottom: "5px",
+  fontWeight: "900",
+};
+
+const dateRow = {
+  display: "flex",
+  gap: "10px",
+  margin: "14px 0",
+  flexWrap: "wrap",
+};
+
+const dateBadge = {
+  padding: "7px 12px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.08)",
+  color: "#e5e5e5",
+  fontSize: "12px",
+  fontWeight: "800",
+};
+
 const buttonRow = {
   display: "flex",
   gap: "12px",
   flexWrap: "wrap",
 };
 
-const btnBlue = {
+const whiteBtn = {
   padding: "11px 16px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.12)",
+  borderRadius: "13px",
+  border: "none",
   background: "#ffffff",
   color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
 };
 
-const btnGreen = {
+const darkBtn = {
   padding: "11px 16px",
-  borderRadius: "12px",
+  borderRadius: "13px",
   border: "1px solid rgba(255,255,255,0.12)",
-  background: "#ffffff",
-  color: "#000000",
+  background: "#0b0b0b",
+  color: "#ffffff",
   cursor: "pointer",
   fontWeight: "900",
 };
 
 const emptyText = {
-  color: "#64748b",
+  color: "#a3a3a3",
   fontSize: "16px",
 };
 
@@ -417,15 +680,14 @@ const placesList = {
   gap: "16px",
 };
 
-
 const placeCard = {
   position: "relative",
-  height: "170px",
+  height: "175px",
   borderRadius: "24px",
   overflow: "hidden",
   cursor: "pointer",
   border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 10px 24px rgba(0,0,0,0.35)",
+  boxShadow: "0 12px 28px rgba(0,0,0,0.35)",
 };
 
 const placeImg = {
@@ -440,13 +702,13 @@ const overlay = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "flex-end",
-  padding: "16px",
-  background: "linear-gradient(to top, rgba(0,0,0,0.78), transparent)",
+  padding: "17px",
+  background: "linear-gradient(to top, rgba(0,0,0,0.82), transparent)",
   color: "#fff",
 };
 
 const placeTitle = {
-  fontSize: "20px",
+  fontSize: "21px",
   fontWeight: "900",
   marginBottom: "4px",
 };
@@ -455,6 +717,35 @@ const placeSummary = {
   fontSize: "14px",
   lineHeight: "1.4",
   color: "#e5e7eb",
+};
+
+const statsSection = {
+  marginTop: "26px",
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "16px",
+};
+
+const statBox = {
+  padding: "26px",
+  borderRadius: "26px",
+  background: "#111111",
+  border: "1px solid rgba(255,255,255,0.1)",
+  textAlign: "center",
+  boxShadow: "0 14px 40px rgba(0,0,0,0.35)",
+};
+
+const statNumber = {
+  fontSize: "34px",
+  fontWeight: "900",
+  color: "#ffffff",
+  margin: 0,
+};
+
+const statText = {
+  color: "#a3a3a3",
+  marginTop: "8px",
+  fontWeight: "800",
 };
 
 export default Home;
