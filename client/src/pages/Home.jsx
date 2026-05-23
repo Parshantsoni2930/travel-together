@@ -32,6 +32,7 @@ const categories = [
 
 const formatDate = (date) => {
   if (!date) return "Not added";
+
   return new Date(date).toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
@@ -40,9 +41,12 @@ const formatDate = (date) => {
 };
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const [trips, setTrips] = useState([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
+  const [requestLoading, setRequestLoading] = useState("");
 
   const [stats, setStats] = useState({
     usersCount: 0,
@@ -51,15 +55,13 @@ const Home = () => {
     destinationsCount: 0,
   });
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchTrips = async () => {
       try {
         const data = await getAllTrips();
         setTrips(data.trips || []);
       } catch (error) {
-        console.log(error);
+        toast.error(error.response?.data?.message || "Error loading trips");
       }
     };
 
@@ -70,7 +72,7 @@ const Home = () => {
     const fetchStats = async () => {
       try {
         const data = await getStats();
-        setStats(data);
+        setStats(data || {});
       } catch (error) {
         console.log(error);
       }
@@ -91,14 +93,33 @@ const Home = () => {
 
   const handleRequest = async (trip) => {
     try {
+      const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+      const receiverId = trip?.user?._id || trip?.user;
+      const tripId = trip?._id;
+
+      if (!receiverId || !tripId) {
+        toast.error("Trip data missing");
+        return;
+      }
+
+      if (currentUser?._id === receiverId) {
+        toast.error("You cannot request your own trip");
+        return;
+      }
+
+      setRequestLoading(tripId);
+
       await sendRequest({
-        receiverId: trip.user._id,
-        tripId: trip._id,
+        receiverId,
+        tripId,
       });
 
       toast.success("Request sent!");
     } catch (error) {
       toast.error(error.response?.data?.message || "Error sending request");
+    } finally {
+      setRequestLoading("");
     }
   };
 
@@ -122,7 +143,10 @@ const Home = () => {
           </p>
 
           <div style={heroButtons}>
-            <button onClick={() => navigate("/create-trip")} style={primaryHeroBtn}>
+            <button
+              onClick={() => navigate("/create-trip")}
+              style={primaryHeroBtn}
+            >
               Create Trip
             </button>
 
@@ -217,70 +241,81 @@ const Home = () => {
             {filteredTrips.length === 0 ? (
               <p style={emptyText}>No trips found</p>
             ) : (
-              filteredTrips.map((trip) => (
-                <div
-                  key={trip._id}
-                  style={tripCard}
-                  onClick={() => navigate(`/trip/${trip._id}`)}
-                >
-                  <div style={tripTop}>
-                    <h3 style={tripTitle}>{trip.destination}</h3>
-                    <span style={typeBadge}>{trip.travelType || "Trip"}</span>
-                  </div>
+              filteredTrips.map((trip) => {
+                const ownerId = trip?.user?._id || trip?.user;
+                const isRequesting = requestLoading === trip._id;
 
-                  <p style={description}>
-                    {trip.description || "No description added."}
-                  </p>
-
-                  <div style={infoGrid}>
-                    <div style={infoBox}>
-                      <span style={infoLabel}>Budget</span>
-                      <b>₹{trip.budget || "Not added"}</b>
+                return (
+                  <div
+                    key={trip._id}
+                    style={tripCard}
+                    onClick={() => {
+                      if (trip?._id) navigate(`/trip/${trip._id}`);
+                    }}
+                  >
+                    <div style={tripTop}>
+                      <h3 style={tripTitle}>{trip.destination}</h3>
+                      <span style={typeBadge}>
+                        {trip.travelType || "Trip"}
+                      </span>
                     </div>
 
-                    <div style={infoBox}>
-                      <span style={infoLabel}>Start</span>
-                      <b>{formatDate(trip.startDate)}</b>
+                    <p style={description}>
+                      {trip.description || "No description added."}
+                    </p>
+
+                    <div style={infoGrid}>
+                      <div style={infoBox}>
+                        <span style={infoLabel}>Budget</span>
+                        <b>₹{trip.budget || "Not added"}</b>
+                      </div>
+
+                      <div style={infoBox}>
+                        <span style={infoLabel}>Start</span>
+                        <b>{formatDate(trip.startDate)}</b>
+                      </div>
+
+                      <div style={infoBox}>
+                        <span style={infoLabel}>By</span>
+                        <b>{trip.user?.name || "Unknown"}</b>
+                      </div>
                     </div>
 
-                    <div style={infoBox}>
-                      <span style={infoLabel}>By</span>
-                      <b>{trip.user?.name || "Unknown"}</b>
+                    <div style={dateRow}>
+                      <span style={dateBadge}>
+                        Created: {formatDate(trip.createdAt)}
+                      </span>
+                      <span style={dateBadge}>
+                        End: {formatDate(trip.endDate)}
+                      </span>
+                    </div>
+
+                    <div style={buttonRow}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (ownerId) navigate(`/user/${ownerId}`);
+                        }}
+                        style={whiteBtn}
+                        disabled={!ownerId}
+                      >
+                        View Profile
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRequest(trip);
+                        }}
+                        style={darkBtn}
+                        disabled={!ownerId || isRequesting}
+                      >
+                        {isRequesting ? "Sending..." : "Send Request"}
+                      </button>
                     </div>
                   </div>
-
-                  <div style={dateRow}>
-                    <span style={dateBadge}>
-                      Created: {formatDate(trip.createdAt)}
-                    </span>
-                    <span style={dateBadge}>
-                      End: {formatDate(trip.endDate)}
-                    </span>
-                  </div>
-
-                  <div style={buttonRow}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/user/${trip.user._id}`);
-                      }}
-                      style={whiteBtn}
-                    >
-                      View Profile
-                    </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRequest(trip);
-                      }}
-                      style={darkBtn}
-                    >
-                      Send Request
-                    </button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </section>
@@ -318,22 +353,22 @@ const Home = () => {
 
       <section style={statsSection}>
         <div style={statBox}>
-          <h2 style={statNumber}>{stats.usersCount}+</h2>
+          <h2 style={statNumber}>{stats.usersCount || 0}+</h2>
           <p style={statText}>Happy Travelers</p>
         </div>
 
         <div style={statBox}>
-          <h2 style={statNumber}>{stats.tripsCount}+</h2>
+          <h2 style={statNumber}>{stats.tripsCount || 0}+</h2>
           <p style={statText}>Trips Created</p>
         </div>
 
         <div style={statBox}>
-          <h2 style={statNumber}>{stats.requestsCount}+</h2>
+          <h2 style={statNumber}>{stats.requestsCount || 0}+</h2>
           <p style={statText}>Buddy Requests</p>
         </div>
 
         <div style={statBox}>
-          <h2 style={statNumber}>{stats.destinationsCount}+</h2>
+          <h2 style={statNumber}>{stats.destinationsCount || 0}+</h2>
           <p style={statText}>Destinations</p>
         </div>
       </section>
@@ -368,7 +403,6 @@ const heroSection = {
   boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
   border: "1px solid rgba(255,255,255,0.08)",
 };
-
 
 const heroOverlay = {
   position: "absolute",
@@ -409,7 +443,6 @@ const heroText = {
   color: "#d4d4d4",
   maxWidth: "580px",
 };
-
 
 const heroButtons = {
   display: "flex",
@@ -585,6 +618,7 @@ const mainGrid = {
   width: "100%",
   alignItems: "start",
 };
+
 const sectionBox = {
   padding: "18px",
   borderRadius: "24px",
@@ -594,7 +628,6 @@ const sectionBox = {
   color: "#ffffff",
   overflow: "hidden",
 };
-
 
 const tripList = {
   display: "flex",

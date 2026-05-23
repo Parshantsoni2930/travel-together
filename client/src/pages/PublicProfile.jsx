@@ -15,11 +15,16 @@ const PublicProfile = () => {
   const [user, setUser] = useState(null);
   const [userTrips, setUserTrips] = useState([]);
   const [friendStatus, setFriendStatus] = useState("none");
-  const [loading, setLoading] = useState(true);
+  // ONLY THESE STATES CHANGE AT TOP
 
-  const loggedInUser = JSON.parse(localStorage.getItem("user"));
-  const isOwnProfile = loggedInUser?._id === id;
+const [loading, setLoading] = useState(true);
+const [actionLoading, setActionLoading] = useState(false);
 
+const loggedInUser = JSON.parse(
+  localStorage.getItem("user") || "{}"
+);
+
+const isOwnProfile = loggedInUser?._id === id;
   const getImageUrl = (img) => {
     if (!img) return null;
 
@@ -68,46 +73,49 @@ const PublicProfile = () => {
   }, [id]);
 
   const handleAddBuddy = async () => {
-    try {
-      await sendFriendRequest(id);
+  try {
+    setActionLoading(true);
 
-      toast.success("Request sent!");
+    await sendFriendRequest(id);
+
+    toast.success("Request sent!");
+    setFriendStatus("sent");
+  } catch (error) {
+    const msg =
+      error.response?.data?.message || "";
+
+    if (msg.toLowerCase().includes("already")) {
       setFriendStatus("sent");
-    } catch (error) {
-      const msg = error.response?.data?.message || "";
-
-      if (msg.toLowerCase().includes("already")) {
-        setFriendStatus("sent");
-        return;
-      }
-
-      if (msg.toLowerCase().includes("friend")) {
-        setFriendStatus("friends");
-        return;
-      }
-
-      toast.error(msg || "Error");
+      return;
     }
-  };
+
+    if (msg.toLowerCase().includes("friend")) {
+      setFriendStatus("friends");
+      return;
+    }
+
+    toast.error(msg || "Error");
+  } finally {
+    setActionLoading(false);
+  }
+};
 
   const handleAccept = async () => {
-    try {
-      await acceptFriendRequest(id);
+  try {
+    setActionLoading(true);
 
-      toast.success("Friend added!");
-      setFriendStatus("friends");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Error");
-    }
-  };
+    await acceptFriendRequest(id);
 
-  if (loading) {
-    return (
-      <div style={pageStyle}>
-        <div style={loadingBox}>Loading profile...</div>
-      </div>
+    toast.success("Friend added!");
+    setFriendStatus("friends");
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Error"
     );
+  } finally {
+    setActionLoading(false);
   }
+};
 
   if (!user) {
     return (
@@ -180,50 +188,56 @@ const PublicProfile = () => {
                   </div>
                 )}
 
-              <div style={actionRow}>
-                {!isOwnProfile && (
-                  <>
-                    {friendStatus === "none" && (
-                      <button
-                        onClick={handleAddBuddy}
-                        style={primaryBtn}
-                      >
-                        Add Buddy
-                      </button>
-                    )}
+             <div style={actionRow}>
+  {!isOwnProfile && (
+    <>
+      {friendStatus === "none" && (
+        <button
+          onClick={handleAddBuddy}
+          style={primaryBtn}
+          disabled={actionLoading}
+        >
+          {actionLoading
+            ? "Please wait..."
+            : "Add Buddy"}
+        </button>
+      )}
 
-                    {friendStatus === "sent" && (
-                      <button disabled style={disabledBtn}>
-                        Request Sent ✓
-                      </button>
-                    )}
+      {friendStatus === "sent" && (
+        <button disabled style={disabledBtn}>
+          Request Sent ✓
+        </button>
+      )}
 
-                    {friendStatus === "received" && (
-                      <button
-                        onClick={handleAccept}
-                        style={primaryBtn}
-                      >
-                        Accept Request
-                      </button>
-                    )}
+      {friendStatus === "received" && (
+        <button
+          onClick={handleAccept}
+          style={primaryBtn}
+          disabled={actionLoading}
+        >
+          {actionLoading
+            ? "Please wait..."
+            : "Accept Request"}
+        </button>
+      )}
 
-                    {friendStatus === "friends" && (
-                      <button disabled style={disabledBtn}>
-                        Friends ✓
-                      </button>
-                    )}
-                  </>
-                )}
+      {friendStatus === "friends" && (
+        <button disabled style={disabledBtn}>
+          Friends ✓
+        </button>
+      )}
+    </>
+  )}
 
-                {isOwnProfile && (
-                  <button
-                    onClick={() => navigate("/profile")}
-                    style={primaryBtn}
-                  >
-                    Edit Profile
-                  </button>
-                )}
-              </div>
+  {isOwnProfile && (
+    <button
+      onClick={() => navigate("/profile")}
+      style={primaryBtn}
+    >
+      Edit Profile
+    </button>
+  )}
+</div>
             </div>
           </div>
         </div>

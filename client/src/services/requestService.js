@@ -1,21 +1,30 @@
 import api from "./api";
 
-export const sendRequest = async (data) => {
-  return (await api.post("/requests/send", data)).data;
+export const sendRequest = async ({ receiverId, tripId }) => {
+  const response = await api.post("/requests/send", {
+    receiverId,
+    tripId,
+  });
+
+  return response.data;
 };
 
 export const getReceivedRequests = async () => {
-  return (await api.get("/requests/received")).data;
+  const response = await api.get("/requests/received");
+  return response.data;
 };
 
 export const getSentRequests = async () => {
-  return (await api.get("/requests/sent")).data;
+  const response = await api.get("/requests/sent");
+  return response.data;
 };
 
 export const acceptRequest = async (id) => {
-  return (await api.put(`/requests/${id}/accept`)).data;
+  const response = await api.put(`/requests/${id}/accept`);
+  return response.data;
 };
 
 export const rejectRequest = async (id) => {
-  return (await api.put(`/requests/${id}/reject`)).data;
+  const response = await api.put(`/requests/${id}/reject`);
+  return response.data;
 };

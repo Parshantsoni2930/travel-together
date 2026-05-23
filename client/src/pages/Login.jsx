@@ -35,7 +35,9 @@ const Login = () => {
       toast.success("Welcome back!");
       navigate("/home");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error");
+      toast.error(
+        error.response?.data?.message || "Login failed"
+      );
     }
   };
 
@@ -43,12 +45,9 @@ const Login = () => {
     <div style={pageStyle}>
       <div style={heroPanel}>
         <div style={heroOverlay}></div>
-
         <div style={heroContent}>
           <span style={heroBadge}>Travel • Connect • Explore</span>
-
           <h1 style={heroTitle}>Welcome Back</h1>
-
           <p style={heroText}>
             Login and continue finding your perfect travel buddies.
           </p>
@@ -57,16 +56,13 @@ const Login = () => {
 
       <div style={authCard}>
         <div style={logoCircle}>🌍</div>
-
         <h2 style={titleStyle}>Login</h2>
-
         <p style={subtitleStyle}>
           Enter your details to continue your journey.
         </p>
 
         <form onSubmit={handleSubmit}>
           <label style={labelStyle}>Email</label>
-
           <input
             style={inputStyle}
             type="email"
@@ -78,7 +74,6 @@ const Login = () => {
           />
 
           <label style={labelStyle}>Password</label>
-
           <input
             style={inputStyle}
             type="password"
@@ -105,6 +100,7 @@ const Login = () => {
   );
 };
 
+// Styles
 const pageStyle = {
   width: "100%",
   minHeight: "100vh",
@@ -151,7 +147,6 @@ const heroContent = {
 
 const heroBadge = {
   display: "inline-block",
-  width: "fit-content",
   padding: "8px 13px",
   borderRadius: "999px",
   background: "rgba(255,255,255,0.12)",

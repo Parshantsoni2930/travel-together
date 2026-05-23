@@ -4,7 +4,7 @@ const AuthRoute = ({ children }) => {
   const token = localStorage.getItem("token");
 
   if (token) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/home" replace />;
   }
 
   return children;

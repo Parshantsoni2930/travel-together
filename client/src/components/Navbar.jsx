@@ -8,36 +8,77 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [imageError, setImageError] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+  const [isMobile, setIsMobile] = useState(
+    window.innerWidth <= 900
+  );
 
   useEffect(() => {
-    const checkScreen = () => setIsMobile(window.innerWidth <= 900);
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+
     checkScreen();
 
     window.addEventListener("resize", checkScreen);
-    return () => window.removeEventListener("resize", checkScreen);
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        checkScreen
+      );
   }, []);
 
   useEffect(() => {
     const loadUser = () => {
-      const storedUser = localStorage.getItem("user");
+      try {
+        const storedUser =
+          localStorage.getItem("user");
 
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        } else {
+          setUser(null);
+        }
+
         setImageError(false);
+      } catch (error) {
+        console.log(
+          "USER LOAD ERROR:",
+          error.message
+        );
+
+        setUser(null);
       }
     };
 
     loadUser();
 
-    window.addEventListener("userUpdated", loadUser);
-    return () => window.removeEventListener("userUpdated", loadUser);
+    window.addEventListener(
+      "userUpdated",
+      loadUser
+    );
+
+    return () => {
+      window.removeEventListener(
+        "userUpdated",
+        loadUser
+      );
+    };
   }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
+
+    window.dispatchEvent(
+      new Event("userUpdated")
+    );
+
     navigate("/login");
   };
 
@@ -50,17 +91,26 @@ const Navbar = () => {
       user?.image;
 
     if (!img) return null;
-    if (img.startsWith("http")) return img;
+
+    if (img.startsWith("http")) {
+      return img;
+    }
 
     return `https://travel-together-z3dr.onrender.com${
-      img.startsWith("/") ? img : `/${img}`
+      img.startsWith("/")
+        ? img
+        : `/${img}`
     }`;
   };
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) =>
+    location.pathname === path;
 
   const profileImage = getProfileImage();
-  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
+
+  const userInitial = user?.name
+    ? user.name.charAt(0).toUpperCase()
+    : "U";
 
   const closeAndGo = (path) => {
     setMenuOpen(false);
@@ -69,17 +119,26 @@ const Navbar = () => {
 
   const navItems = [
     { label: "Home", path: "/home" },
-    { label: "Create Trip", path: "/create-trip" },
+    {
+      label: "Create Trip",
+      path: "/create-trip",
+    },
     { label: "My Trips", path: "/my-trips" },
     { label: "Requests", path: "/requests" },
     { label: "Chats", path: "/chats" },
-    { label: "AI Planner", path: "/ai-planner" },
+    {
+      label: "AI Planner",
+      path: "/ai-planner",
+    },
   ];
 
   return (
     <>
       <nav style={navStyle}>
-        <div style={brandBox} onClick={() => navigate("/home")}>
+        <div
+          style={brandBox}
+          onClick={() => navigate("/home")}
+        >
           <div style={logoBox}>
             <img
               src="/images/logo (2).png"
@@ -88,10 +147,18 @@ const Navbar = () => {
             />
           </div>
 
-          <div>
-            <h2 style={brandTitle}>Travel Buddy Finder</h2>
-            <p style={brandSub}>Find trips. Meet buddies. Travel smarter.</p>
-          </div>
+          {!isMobile && (
+            <div>
+              <h2 style={brandTitle}>
+                Travel Buddy Finder
+              </h2>
+
+              <p style={brandSub}>
+                Find trips. Meet buddies.
+                Travel smarter.
+              </p>
+            </div>
+          )}
         </div>
 
         {!isMobile && (
@@ -102,7 +169,9 @@ const Navbar = () => {
                 to={item.path}
                 style={{
                   ...linkStyle,
-                  ...(isActive(item.path) ? activeLink : {}),
+                  ...(isActive(item.path)
+                    ? activeLink
+                    : {}),
                 }}
               >
                 {item.label}
@@ -112,27 +181,47 @@ const Navbar = () => {
         )}
 
         <div style={rightStyle}>
-          <div onClick={() => navigate("/profile")} style={profileCircle}>
-            {profileImage && !imageError ? (
+          <div
+            onClick={() =>
+              navigate("/profile")
+            }
+            style={profileCircle}
+          >
+            {profileImage &&
+            !imageError ? (
               <img
                 src={profileImage}
-                alt="profile"
+                alt={
+                  user?.name || "Profile"
+                }
                 style={profileImg}
-                onError={() => setImageError(true)}
+                onError={() =>
+                  setImageError(true)
+                }
               />
             ) : (
-              <span style={initialText}>{userInitial}</span>
+              <span style={initialText}>
+                {userInitial}
+              </span>
             )}
           </div>
 
           {!isMobile && (
-            <button onClick={handleLogout} style={logoutBtn}>
+            <button
+              onClick={handleLogout}
+              style={logoutBtn}
+            >
               Logout
             </button>
           )}
 
           {isMobile && (
-            <button onClick={() => setMenuOpen(true)} style={hamburgerBtn}>
+            <button
+              onClick={() =>
+                setMenuOpen(true)
+              }
+              style={hamburgerBtn}
+            >
               ☰
             </button>
           )}
@@ -140,8 +229,18 @@ const Navbar = () => {
       </nav>
 
       {isMobile && menuOpen && (
-        <div style={overlayStyle} onClick={() => setMenuOpen(false)}>
-          <div style={mobileMenu} onClick={(e) => e.stopPropagation()}>
+        <div
+          style={overlayStyle}
+          onClick={() =>
+            setMenuOpen(false)
+          }
+        >
+          <div
+            style={mobileMenu}
+            onClick={(e) =>
+              e.stopPropagation()
+            }
+          >
             <div style={mobileTop}>
               <div style={mobileBrandBox}>
                 <img
@@ -151,12 +250,22 @@ const Navbar = () => {
                 />
 
                 <div>
-                  <h2 style={mobileTitle}>Travel Buddy Finder</h2>
-                  <p style={brandSub}>Find trips & buddies.</p>
+                  <h2 style={mobileTitle}>
+                    Travel Buddy Finder
+                  </h2>
+
+                  <p style={brandSub}>
+                    Find trips & buddies.
+                  </p>
                 </div>
               </div>
 
-              <button onClick={() => setMenuOpen(false)} style={closeBtn}>
+              <button
+                onClick={() =>
+                  setMenuOpen(false)
+                }
+                style={closeBtn}
+              >
                 ×
               </button>
             </div>
@@ -165,19 +274,30 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <button
                   key={item.path}
-                  onClick={() => closeAndGo(item.path)}
+                  onClick={() =>
+                    closeAndGo(item.path)
+                  }
                   style={{
                     ...mobileLinkBtn,
-                    ...(isActive(item.path) ? mobileActive : {}),
+                    ...(isActive(item.path)
+                      ? mobileActive
+                      : {}),
                   }}
                 >
-                  <span>{item.label}</span>
+                  <span>
+                    {item.label}
+                  </span>
+
                   <span>›</span>
                 </button>
               ))}
 
-              <button onClick={handleLogout} style={mobileLogout}>
+              <button
+                onClick={handleLogout}
+                style={mobileLogout}
+              >
                 <span>Logout</span>
+
                 <span>›</span>
               </button>
             </div>
@@ -191,32 +311,33 @@ const Navbar = () => {
 const navStyle = {
   width: "100%",
   minHeight: "92px",
-  padding: "18px 42px",
+  padding: "18px 24px",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "24px",
-  background: "rgba(5, 5, 5, 0.92)",
-  borderBottom: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 12px 35px rgba(0,0,0,0.45)",
+  gap: "20px",
+  background: "rgba(5,5,5,0.92)",
+  borderBottom:
+    "1px solid rgba(255,255,255,0.12)",
+  boxShadow:
+    "0 12px 35px rgba(0,0,0,0.45)",
   position: "sticky",
   top: 0,
   zIndex: 1000,
   backdropFilter: "blur(14px)",
+  boxSizing: "border-box",
 };
 
 const brandBox = {
   display: "flex",
   alignItems: "center",
-  gap: "30px",
+  gap: "16px",
   cursor: "pointer",
-  minWidth: "430px",
-  marginLeft: "0px",
 };
 
 const logoBox = {
-  width: "150px",
-  height: "98px",
+  width: "80px",
+  height: "60px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -225,24 +346,21 @@ const logoBox = {
 };
 
 const logoImg = {
-  width: "260px",
-  height: "260px",
+  width: "140px",
+  height: "140px",
   objectFit: "contain",
-  background: "transparent",
-  transform: "scale(2.2)",
 };
-
 
 const brandTitle = {
   margin: 0,
-  fontSize: "23px",
+  fontSize: "22px",
   fontWeight: "900",
   color: "#ffffff",
 };
 
 const brandSub = {
   margin: "5px 0 0",
-  fontSize: "13px",
+  fontSize: "12px",
   color: "#a3a3a3",
 };
 
@@ -251,7 +369,7 @@ const linksBox = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "12px",
+  gap: "10px",
   flexWrap: "wrap",
 };
 
@@ -262,8 +380,10 @@ const linkStyle = {
   fontSize: "14px",
   padding: "11px 16px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background:
+    "rgba(255,255,255,0.04)",
+  border:
+    "1px solid rgba(255,255,255,0.1)",
   whiteSpace: "nowrap",
 };
 
@@ -274,7 +394,6 @@ const activeLink = {
 };
 
 const rightStyle = {
-  minWidth: "150px",
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
@@ -286,12 +405,14 @@ const profileCircle = {
   height: "50px",
   borderRadius: "50%",
   background: "#111111",
-  border: "2px solid rgba(255,255,255,0.75)",
+  border:
+    "2px solid rgba(255,255,255,0.75)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
   overflow: "hidden",
+  flexShrink: 0,
 };
 
 const profileImg = {
@@ -309,7 +430,8 @@ const initialText = {
 const logoutBtn = {
   padding: "11px 17px",
   borderRadius: "999px",
-  border: "1px solid rgba(255,255,255,0.18)",
+  border:
+    "1px solid rgba(255,255,255,0.18)",
   background: "#ffffff",
   color: "#000000",
   cursor: "pointer",
@@ -320,7 +442,8 @@ const hamburgerBtn = {
   width: "46px",
   height: "46px",
   borderRadius: "14px",
-  border: "1px solid rgba(255,255,255,0.16)",
+  border:
+    "1px solid rgba(255,255,255,0.16)",
   background: "#111111",
   color: "#ffffff",
   fontSize: "25px",
@@ -343,9 +466,12 @@ const mobileMenu = {
   maxWidth: "390px",
   height: "100vh",
   background: "#050505",
-  borderLeft: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "-12px 0 35px rgba(0,0,0,0.55)",
+  borderLeft:
+    "1px solid rgba(255,255,255,0.12)",
+  boxShadow:
+    "-12px 0 35px rgba(0,0,0,0.55)",
   padding: "20px",
+  boxSizing: "border-box",
 };
 
 const mobileTop = {
@@ -353,7 +479,8 @@ const mobileTop = {
   justifyContent: "space-between",
   alignItems: "center",
   paddingBottom: "18px",
-  borderBottom: "1px solid rgba(255,255,255,0.12)",
+  borderBottom:
+    "1px solid rgba(255,255,255,0.12)",
 };
 
 const mobileBrandBox = {
@@ -379,7 +506,8 @@ const closeBtn = {
   width: "42px",
   height: "42px",
   borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.12)",
+  border:
+    "1px solid rgba(255,255,255,0.12)",
   background: "#111111",
   color: "#ffffff",
   fontSize: "28px",
@@ -397,7 +525,8 @@ const mobileLinkBtn = {
   width: "100%",
   padding: "15px 16px",
   borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.12)",
+  border:
+    "1px solid rgba(255,255,255,0.12)",
   background: "#111111",
   color: "#ffffff",
   cursor: "pointer",

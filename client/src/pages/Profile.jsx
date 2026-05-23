@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getProfile, updateProfile, getFriends } from "../services/userService";
+import {
+  getProfile,
+  updateProfile,
+  getFriends,
+} from "../services/userService";
 import toast from "react-hot-toast";
 
 const Profile = () => {
@@ -17,11 +21,15 @@ const Profile = () => {
   const [preview, setPreview] = useState("");
   const [friends, setFriends] = useState([]);
   const [friendsCount, setFriendsCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "";
 
-    if (imagePath.startsWith("http")) return imagePath;
+    if (imagePath.startsWith("http")) {
+      return imagePath;
+    }
 
     return `https://travel-together-z3dr.onrender.com${
       imagePath.startsWith("/") ? imagePath : `/${imagePath}`
@@ -31,38 +39,51 @@ const Profile = () => {
   const fetchFriends = async () => {
     try {
       const data = await getFriends();
+
       setFriends(data.friends || []);
       setFriendsCount(data.friends?.length || 0);
     } catch (error) {
-      console.log(error);
+      console.log(
+        "GET FRIENDS ERROR:",
+        error.response?.data || error.message
+      );
     }
   };
 
   const fetchProfile = async () => {
     try {
+      setLoading(true);
+
       const data = await getProfile();
+
       const user = data.user;
 
       setFormData({
-        name: user.name || "",
-        age: user.age || "",
-        gender: user.gender || "",
-        city: user.city || "",
-        bio: user.bio || "",
-        interests: Array.isArray(user.interests)
+        name: user?.name || "",
+        age: user?.age || "",
+        gender: user?.gender || "",
+        city: user?.city || "",
+        bio: user?.bio || "",
+        interests: Array.isArray(user?.interests)
           ? user.interests.join(", ")
           : "",
-        email: user.email || "",
+        email: user?.email || "",
       });
 
-      if (user.profileImage) {
+      if (user?.profileImage) {
         setPreview(getImageUrl(user.profileImage));
       }
 
       localStorage.setItem("user", JSON.stringify(user));
+
       window.dispatchEvent(new Event("userUpdated"));
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error loading profile");
+      toast.error(
+        error.response?.data?.message ||
+          "Error loading profile"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,25 +93,30 @@ const Profile = () => {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+
+    if (!file) return;
+
     setProfileImage(file);
 
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-    }
+    const imageUrl = URL.createObjectURL(file);
+
+    setPreview(imageUrl);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      setUpdateLoading(true);
+
       const payload = new FormData();
 
       payload.append("name", formData.name);
@@ -107,20 +133,44 @@ const Profile = () => {
       const data = await updateProfile(payload);
 
       if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        window.dispatchEvent(new Event("userUpdated"));
+        localStorage.setItem(
+          "user",
+          JSON.stringify(data.user)
+        );
+
+        window.dispatchEvent(
+          new Event("userUpdated")
+        );
 
         if (data.user.profileImage) {
-          setPreview(getImageUrl(data.user.profileImage));
+          setPreview(
+            getImageUrl(data.user.profileImage)
+          );
         }
       }
 
       toast.success("Profile updated successfully");
-      fetchProfile();
+
+      await fetchProfile();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error updating profile");
+      toast.error(
+        error.response?.data?.message ||
+          "Error updating profile"
+      );
+    } finally {
+      setUpdateLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div style={loadingContainer}>
+        <div style={loadingCard}>
+          Loading profile...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={pageStyle}>
@@ -128,19 +178,26 @@ const Profile = () => {
         <div style={heroOverlay}></div>
 
         <div style={heroContent}>
-          <span style={heroBadge}>Identity • Travel • Connections</span>
+          <span style={heroBadge}>
+            Identity • Travel • Connections
+          </span>
 
           <h1 style={heroTitle}>My Profile</h1>
 
           <p style={heroText}>
-            Manage your travel identity, interests, and buddy connections.
+            Manage your travel identity, interests,
+            and buddy connections.
           </p>
         </div>
 
         <div style={statsGlass}>
-          <span style={statsLabel}>Travel Buddies</span>
+          <span style={statsLabel}>
+            Travel Buddies
+          </span>
 
-          <h2 style={statsValue}>{friendsCount}</h2>
+          <h2 style={statsValue}>
+            {friendsCount}
+          </h2>
         </div>
       </div>
 
@@ -148,52 +205,86 @@ const Profile = () => {
         <div style={topSection}>
           <div style={imageBox}>
             {preview ? (
-              <img src={preview} alt="Profile" style={profileImg} />
+              <img
+                src={preview}
+                alt={formData?.name || "Profile"}
+                style={profileImg}
+              />
             ) : (
               <div style={avatarFallback}>
-                {formData.name ? formData.name.charAt(0).toUpperCase() : "U"}
+                {formData.name
+                  ? formData.name
+                      .charAt(0)
+                      .toUpperCase()
+                  : "U"}
               </div>
             )}
           </div>
 
           <div style={friendsBox}>
-            <h3 style={friendsTitle}>Travel Buddies</h3>
+            <h3 style={friendsTitle}>
+              Travel Buddies
+            </h3>
 
             {friends.length > 0 ? (
               <div style={friendsList}>
-                {friends.slice(0, 8).map((friend) => (
-                  <div key={friend._id} style={friendItem}>
-                    {friend.profileImage ? (
-                      <img
-                        src={getImageUrl(friend.profileImage)}
-                        alt={friend.name}
-                        style={friendImg}
-                      />
-                    ) : (
-                      <div style={friendFallback}>
-                        {friend.name
-                          ? friend.name.charAt(0).toUpperCase()
-                          : "U"}
-                      </div>
-                    )}
+                {friends
+                  .slice(0, 8)
+                  .map((friend) => (
+                    <div
+                      key={friend._id}
+                      style={friendItem}
+                    >
+                      {friend.profileImage ? (
+                        <img
+                          src={getImageUrl(
+                            friend.profileImage
+                          )}
+                          alt={
+                            friend?.name ||
+                            "Friend"
+                          }
+                          style={friendImg}
+                        />
+                      ) : (
+                        <div
+                          style={
+                            friendFallback
+                          }
+                        >
+                          {friend.name
+                            ? friend.name
+                                .charAt(0)
+                                .toUpperCase()
+                            : "U"}
+                        </div>
+                      )}
 
-                    <span style={friendName}>
-                      {friend.name || "User"}
-                    </span>
-                  </div>
-                ))}
+                      <span style={friendName}>
+                        {friend.name ||
+                          "User"}
+                      </span>
+                    </div>
+                  ))}
               </div>
             ) : (
               <p style={noFriendsText}>
-                No buddies yet. Send requests from trips and start connecting.
+                No buddies yet. Send requests
+                from trips and start
+                connecting.
               </p>
             )}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} style={formStyle}>
+        <form
+          onSubmit={handleSubmit}
+          style={formStyle}
+        >
           <div style={fileBox}>
-            <label style={fileLabel}>Profile Image</label>
+            <label style={fileLabel}>
+              Profile Image
+            </label>
 
             <input
               type="file"
@@ -205,7 +296,9 @@ const Profile = () => {
 
           <div style={formGrid}>
             <div>
-              <label style={labelStyle}>Name</label>
+              <label style={labelStyle}>
+                Name
+              </label>
 
               <input
                 style={inputStyle}
@@ -218,7 +311,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label style={labelStyle}>Email</label>
+              <label style={labelStyle}>
+                Email
+              </label>
 
               <input
                 style={disabledInput}
@@ -230,7 +325,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label style={labelStyle}>Age</label>
+              <label style={labelStyle}>
+                Age
+              </label>
 
               <input
                 style={inputStyle}
@@ -243,7 +340,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label style={labelStyle}>Gender</label>
+              <label style={labelStyle}>
+                Gender
+              </label>
 
               <input
                 style={inputStyle}
@@ -256,7 +355,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label style={labelStyle}>City</label>
+              <label style={labelStyle}>
+                City
+              </label>
 
               <input
                 style={inputStyle}
@@ -269,7 +370,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label style={labelStyle}>Interests</label>
+              <label style={labelStyle}>
+                Interests
+              </label>
 
               <input
                 style={inputStyle}
@@ -283,7 +386,9 @@ const Profile = () => {
           </div>
 
           <div>
-            <label style={labelStyle}>Bio</label>
+            <label style={labelStyle}>
+              Bio
+            </label>
 
             <textarea
               style={textareaStyle}
@@ -294,13 +399,37 @@ const Profile = () => {
             />
           </div>
 
-          <button type="submit" style={submitBtn}>
-            Update Profile
+          <button
+            type="submit"
+            style={submitBtn}
+            disabled={updateLoading}
+          >
+            {updateLoading
+              ? "Updating..."
+              : "Update Profile"}
           </button>
         </form>
       </div>
     </div>
   );
+};
+
+const loadingContainer = {
+  width: "100%",
+  minHeight: "100vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  background: "#050505",
+};
+
+const loadingCard = {
+  padding: "24px 30px",
+  borderRadius: "20px",
+  background: "#111111",
+  color: "#ffffff",
+  fontWeight: "900",
+  border: "1px solid rgba(255,255,255,0.08)",
 };
 
 const pageStyle = {
@@ -329,8 +458,10 @@ const heroSection = {
     "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
   backgroundSize: "cover",
   backgroundPosition: "center",
-  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow:
+    "0 14px 36px rgba(0,0,0,0.45)",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
 };
 
 const heroOverlay = {
@@ -350,8 +481,10 @@ const heroBadge = {
   display: "inline-block",
   padding: "8px 13px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.12)",
-  border: "1px solid rgba(255,255,255,0.18)",
+  background:
+    "rgba(255,255,255,0.12)",
+  border:
+    "1px solid rgba(255,255,255,0.18)",
   color: "#fff",
   fontSize: "12px",
   fontWeight: "900",
@@ -379,8 +512,10 @@ const statsGlass = {
   zIndex: 2,
   padding: "20px 24px",
   borderRadius: "24px",
-  background: "rgba(255,255,255,0.08)",
-  border: "1px solid rgba(255,255,255,0.14)",
+  background:
+    "rgba(255,255,255,0.08)",
+  border:
+    "1px solid rgba(255,255,255,0.14)",
   backdropFilter: "blur(12px)",
   color: "#ffffff",
   minWidth: "180px",
@@ -407,8 +542,10 @@ const profileCard = {
   padding: "24px",
   borderRadius: "28px",
   background: "#111111",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+  boxShadow:
+    "0 12px 30px rgba(0,0,0,0.35)",
   boxSizing: "border-box",
 };
 
@@ -420,7 +557,8 @@ const topSection = {
   padding: "22px",
   borderRadius: "24px",
   background: "#181818",
-  border: "1px solid rgba(255,255,255,0.06)",
+  border:
+    "1px solid rgba(255,255,255,0.06)",
   flexWrap: "wrap",
 };
 
@@ -533,14 +671,16 @@ const fileInput = {
   width: "100%",
   padding: "12px",
   borderRadius: "14px",
-  border: "1px dashed rgba(255,255,255,0.12)",
+  border:
+    "1px dashed rgba(255,255,255,0.12)",
   background: "#181818",
   color: "#ffffff",
 };
 
 const formGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(240px, 1fr))",
   gap: "14px",
 };
 
@@ -557,7 +697,8 @@ const inputStyle = {
   padding: "14px",
   marginBottom: "14px",
   borderRadius: "14px",
-  border: "1px solid rgba(255,255,255,0.08)",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
   outline: "none",
   fontSize: "14px",
   background: "#1a1a1a",

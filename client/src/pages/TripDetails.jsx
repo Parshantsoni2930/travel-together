@@ -10,6 +10,7 @@ const TripDetails = () => {
 
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
 
   const formatDate = (date) => {
     if (!date) return "Not added";
@@ -35,16 +36,35 @@ const TripDetails = () => {
   }, [id]);
 
   const handleRequest = async () => {
-    if (!trip?.user?._id) return;
+    const receiverId =
+      trip?.user?._id ||
+      trip?.user ||
+      trip?.createdBy?._id ||
+      trip?.createdBy;
+
+    const tripId = trip?._id;
+
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!receiverId || !tripId) {
+      toast.error("Trip owner or trip id missing");
+      return;
+    }
+
+    if (currentUser?._id === receiverId) {
+      toast.error("You cannot request your own trip");
+      return;
+    }
 
     try {
       setLoading(true);
 
       await sendRequest({
-        receiverId: trip.user._id,
-        tripId: trip._id,
+        receiverId,
+        tripId,
       });
 
+      setRequestSent(true);
       toast.success("Request sent!");
     } catch (error) {
       toast.error(error.response?.data?.message || "Error sending request");
@@ -83,9 +103,7 @@ const TripDetails = () => {
         <div style={budgetGlass}>
           <span style={budgetLabel}>Budget</span>
 
-          <h2 style={budgetValue}>
-            ₹{trip.budget || "Not added"}
-          </h2>
+          <h2 style={budgetValue}>₹{trip.budget || "Not added"}</h2>
         </div>
       </div>
 
@@ -123,7 +141,11 @@ const TripDetails = () => {
 
           <div style={btnRow}>
             <button
-              onClick={() => navigate(`/user/${trip.user._id}`)}
+              onClick={() => {
+                if (trip?.user?._id) {
+                  navigate(`/user/${trip.user._id}`);
+                }
+              }}
               style={profileBtn}
               disabled={!trip.user?._id}
             >
@@ -133,9 +155,13 @@ const TripDetails = () => {
             <button
               onClick={handleRequest}
               style={requestBtn}
-              disabled={loading}
+              disabled={loading || requestSent}
             >
-              {loading ? "Sending..." : "Request to Join"}
+              {loading
+                ? "Sending..."
+                : requestSent
+                ? "Request Sent"
+                : "Request to Join"}
             </button>
           </div>
         </div>

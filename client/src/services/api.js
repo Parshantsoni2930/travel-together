@@ -1,18 +1,22 @@
-import axios from "axios";
+import api from "./api";
 
-const api = axios.create({
-  baseURL: "https://travel-together-z3dr.onrender.com/api",
-});
+export const sendRequest = async (data) => {
+  console.log("SEND REQUEST DATA:", data);
+  return (await api.post("/requests/send", data)).data;
+};
 
-// token automatically add hoga
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+export const getReceivedRequests = async () => {
+  return (await api.get("/requests/received")).data;
+};
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+export const getSentRequests = async () => {
+  return (await api.get("/requests/sent")).data;
+};
 
-  return config;
-});
+export const acceptRequest = async (id) => {
+  return (await api.put(`/requests/${id}/accept`)).data;
+};
 
-export default api;
+export const rejectRequest = async (id) => {
+  return (await api.put(`/requests/${id}/reject`)).data;
+};

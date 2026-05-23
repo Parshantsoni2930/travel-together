@@ -9,6 +9,7 @@ import {
 const Requests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState("");
 
   const getImageUrl = (img) => {
     if (!img) return "";
@@ -28,7 +29,10 @@ const Requests = () => {
 
       setRequests(data.requests || []);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error loading requests");
+      toast.error(
+        error.response?.data?.message ||
+          "Error loading requests"
+      );
     } finally {
       setLoading(false);
     }
@@ -36,6 +40,8 @@ const Requests = () => {
 
   const handleAccept = async (id) => {
     try {
+      setActionLoading(id);
+
       await acceptFriendRequest(id);
 
       toast.success("Buddy request accepted!");
@@ -44,12 +50,19 @@ const Requests = () => {
         prev.filter((req) => req._id !== id)
       );
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error accepting request");
+      toast.error(
+        error.response?.data?.message ||
+          "Error accepting request"
+      );
+    } finally {
+      setActionLoading("");
     }
   };
 
   const handleReject = async (id) => {
     try {
+      setActionLoading(id);
+
       await rejectFriendRequest(id);
 
       toast.success("Buddy request rejected");
@@ -58,7 +71,12 @@ const Requests = () => {
         prev.filter((req) => req._id !== id)
       );
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error rejecting request");
+      toast.error(
+        error.response?.data?.message ||
+          "Error rejecting request"
+      );
+    } finally {
+      setActionLoading("");
     }
   };
 
@@ -72,12 +90,15 @@ const Requests = () => {
         <div style={heroOverlay}></div>
 
         <div style={heroContent}>
-          <span style={heroBadge}>Connect • Accept • Travel</span>
+          <span style={heroBadge}>
+            Connect • Accept • Travel
+          </span>
 
           <h1 style={heroTitle}>Buddy Requests</h1>
 
           <p style={heroText}>
-            Manage incoming travel buddy requests and connect with travelers.
+            Manage incoming travel buddy requests and
+            connect with travelers.
           </p>
         </div>
 
@@ -102,9 +123,11 @@ const Requests = () => {
         ) : (
           <div style={requestList}>
             {requests.map((req) => {
-              const profileImg = getImageUrl(req.profileImage);
+              const profileImg = getImageUrl(
+                req?.profileImage
+              );
 
-              const initial = req.name
+              const initial = req?.name
                 ? req.name.charAt(0).toUpperCase()
                 : "U";
 
@@ -115,7 +138,7 @@ const Requests = () => {
                       {profileImg ? (
                         <img
                           src={profileImg}
-                          alt={req.name}
+                          alt={req?.name || "User"}
                           style={avatarImg}
                         />
                       ) : (
@@ -127,32 +150,47 @@ const Requests = () => {
 
                     <div>
                       <h3 style={nameStyle}>
-                        {req.name || "User"}
+                        {req?.name || "User"}
                       </h3>
 
                       <p style={emailStyle}>
-                        {req.email || "No email"}
+                        {req?.email || "No email"}
                       </p>
 
                       <p style={cityStyle}>
-                        📍 {req.city || "City not added"}
+                        📍{" "}
+                        {req?.city || "City not added"}
                       </p>
                     </div>
                   </div>
 
                   <div style={buttonBox}>
                     <button
-                      onClick={() => handleAccept(req._id)}
+                      onClick={() =>
+                        handleAccept(req._id)
+                      }
                       style={acceptBtn}
+                      disabled={
+                        actionLoading === req._id
+                      }
                     >
-                      Accept
+                      {actionLoading === req._id
+                        ? "Please wait..."
+                        : "Accept"}
                     </button>
 
                     <button
-                      onClick={() => handleReject(req._id)}
+                      onClick={() =>
+                        handleReject(req._id)
+                      }
                       style={rejectBtn}
+                      disabled={
+                        actionLoading === req._id
+                      }
                     >
-                      Reject
+                      {actionLoading === req._id
+                        ? "Please wait..."
+                        : "Reject"}
                     </button>
                   </div>
                 </div>
@@ -164,6 +202,8 @@ const Requests = () => {
     </div>
   );
 };
+
+/* styles unchanged below */
 
 const pageStyle = {
   width: "100%",
