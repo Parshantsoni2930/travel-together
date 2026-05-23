@@ -1,6 +1,8 @@
+const mongoose = require("mongoose");
 const BuddyRequest = require("../models/BuddyRequest");
+const Trip = require("../models/Trip");
+const User = require("../models/User");
 
-// Send request
 const sendRequest = async (req, res) => {
   try {
     const { receiverId, tripId } = req.body;
@@ -8,6 +10,41 @@ const sendRequest = async (req, res) => {
     if (!receiverId || !tripId) {
       return res.status(400).json({
         message: "receiverId and tripId are required",
+      });
+    }
+
+    if (
+      !mongoose.Types.ObjectId.isValid(receiverId) ||
+      !mongoose.Types.ObjectId.isValid(tripId)
+    ) {
+      return res.status(400).json({
+        message: "Invalid receiverId or tripId",
+      });
+    }
+
+    if (receiverId.toString() === req.user._id.toString()) {
+      return res.status(400).json({
+        message: "You cannot send request to your own trip",
+      });
+    }
+
+    const receiver = await User.findById(receiverId);
+    if (!receiver) {
+      return res.status(404).json({
+        message: "Receiver user not found",
+      });
+    }
+
+    const trip = await Trip.findById(tripId);
+    if (!trip) {
+      return res.status(404).json({
+        message: "Trip not found",
+      });
+    }
+
+    if (trip.user.toString() !== receiverId.toString()) {
+      return res.status(400).json({
+        message: "Receiver does not own this trip",
       });
     }
 
@@ -27,66 +64,86 @@ const sendRequest = async (req, res) => {
       sender: req.user._id,
       receiver: receiverId,
       trip: tripId,
+      status: "pending",
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Request sent successfully",
       request,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("SEND REQUEST ERROR:", error);
+
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "Request already sent",
+      });
+    }
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
 
-// Get received requests
 const getReceivedRequests = async (req, res) => {
   try {
     const requests = await BuddyRequest.find({
       receiver: req.user._id,
     })
-      .populate("sender", "name email")
-      .populate("trip", "destination startDate endDate");
+      .populate("sender", "name email profileImage city")
+      .populate("trip", "destination startDate endDate budget travelType")
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Received requests fetched successfully",
       requests,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("GET RECEIVED REQUESTS ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
 
-// Get sent requests
 const getSentRequests = async (req, res) => {
   try {
     const requests = await BuddyRequest.find({
       sender: req.user._id,
     })
-      .populate("receiver", "name email")
-      .populate("trip", "destination startDate endDate");
+      .populate("receiver", "name email profileImage city")
+      .populate("trip", "destination startDate endDate budget travelType")
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Sent requests fetched successfully",
       requests,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("GET SENT REQUESTS ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
 
-// Accept request
 const acceptRequest = async (req, res) => {
   try {
-    const request = await BuddyRequest.findById(req.params.id);
+    const requestId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(requestId)) {
+      return res.status(400).json({
+        message: "Invalid request id",
+      });
+    }
+
+    const request = await BuddyRequest.findById(requestId);
 
     if (!request) {
       return res.status(404).json({
@@ -103,22 +160,31 @@ const acceptRequest = async (req, res) => {
     request.status = "accepted";
     await request.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Request accepted successfully",
       request,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("ACCEPT REQUEST ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
 
-// Reject request
 const rejectRequest = async (req, res) => {
   try {
-    const request = await BuddyRequest.findById(req.params.id);
+    const requestId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(requestId)) {
+      return res.status(400).json({
+        message: "Invalid request id",
+      });
+    }
+
+    const request = await BuddyRequest.findById(requestId);
 
     if (!request) {
       return res.status(404).json({
@@ -135,12 +201,14 @@ const rejectRequest = async (req, res) => {
     request.status = "rejected";
     await request.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Request rejected successfully",
       request,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("REJECT REQUEST ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });

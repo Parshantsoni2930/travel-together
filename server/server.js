@@ -3,9 +3,9 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const http = require("http");
 const { Server } = require("socket.io");
-const connectDB = require("./config/db");
 const path = require("path");
 
+const connectDB = require("./config/db");
 
 dotenv.config();
 connectDB();
@@ -13,30 +13,41 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// Allowed frontend URLs
 const allowedOrigins = [
   "http://localhost:5173",
   "https://travel-together-kej8.vercel.app",
-  "https://travel-together-kej8-nbmx8am13-parshantsoni2930s-projects.vercel.app",
+  "https://travel-together-z3dr.vercel.app",
 ];
 
-// CORS options
 const corsOptions = {
-  origin: allowedOrigins,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
 };
 
-// Socket.io setup
-const io = new Server(server, {
-  cors: corsOptions,
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  console.log("HIT:", req.method, req.originalUrl);
+  next();
 });
 
-// Middleware
-app.use(cors(corsOptions));
-app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Routes
+app.get("/", (req, res) => {
+  res.status(200).send("Backend is Running");
+});
+
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/trips", require("./routes/tripRoutes"));
@@ -45,24 +56,22 @@ app.use("/api/messages", require("./routes/messageRoutes"));
 app.use("/api/ai", require("./routes/aiRoutes"));
 app.use("/api/stats", require("./routes/statsRoutes"));
 
-// Static uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Test route
-app.get("/", (req, res) => {
-  res.send("Backend is Running");
+const io = new Server(server, {
+  cors: corsOptions,
+  transports: ["websocket", "polling"],
 });
 
-// Socket logic
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
   socket.on("join", (userId) => {
-    socket.join(userId);
+    if (userId) socket.join(userId);
   });
 
   socket.on("sendMessage", (messageData) => {
-    io.to(messageData.receiverId).emit("receiveMessage", messageData);
+    if (messageData?.receiverId) {
+      io.to(messageData.receiverId).emit("receiveMessage", messageData);
+    }
   });
 
   socket.on("disconnect", () => {
@@ -70,9 +79,24 @@ io.on("connection", (socket) => {
   });
 });
 
-// Start server
+app.use((err, req, res, next) => {
+  console.log("GLOBAL ERROR:", err);
+
+  res.status(err.status || 500).json({
+    message: err.message || "Server error",
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+process.on("uncaughtException", (err) => {
+  console.log("UNCAUGHT EXCEPTION:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.log("UNHANDLED REJECTION:", err);
 });

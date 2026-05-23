@@ -5,66 +5,98 @@ const getAISuggestions = async (req, res) => {
     const { query, history = [] } = req.body;
 
     if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ message: "Gemini API key missing" });
+      return res.status(500).json({
+        message: "Gemini API key missing",
+      });
     }
 
     if (!query || !query.trim()) {
-      return res.status(400).json({ message: "Query is required" });
+      return res.status(400).json({
+        message: "Query is required",
+      });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY.trim());
+    const genAI = new GoogleGenerativeAI(
+      process.env.GEMINI_API_KEY.trim()
+    );
 
-    const conversation = history
-      .filter((msg) => msg?.text)
-      .map((msg) => `${msg.role === "user" ? "User" : "AI"}: ${msg.text}`)
-      .join("\n");
+    const safeHistory = Array.isArray(history)
+      ? history
+          .filter((msg) => msg?.text)
+          .slice(-10)
+          .map(
+            (msg) =>
+              `${msg.role === "user" ? "User" : "AI"}: ${msg.text}`
+          )
+          .join("\n")
+      : "";
 
     const prompt = `
 You are a friendly AI travel planner inside Travel Buddy Finder.
-Create practical trip plans with itinerary, budget, routes, food, places and safety tips.
-Keep it clear and useful.
+
+Give a practical travel plan with:
+- short overview
+- day-wise itinerary
+- estimated budget
+- best route/transport
+- food suggestions
+- safety tips
+- packing tips
+
+Keep the answer clear, helpful, and easy to read.
 
 Conversation:
-${conversation}
+${safeHistory}
 
 User request:
-${query}
+${query.trim()}
 
 AI:
 `;
 
     const modelNames = [
-      "gemini-2.0-flash",
-      "gemini-2.0-flash-lite",
-      "gemini-pro",
+      "gemini-1.5-flash",
+      "gemini-1.5-flash-8b",
+      "gemini-1.5-pro",
     ];
 
-    let reply = null;
+    let reply = "";
     let lastError = null;
 
     for (const modelName of modelNames) {
       try {
-        const model = genAI.getGenerativeModel({ model: modelName });
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+        });
+
         const result = await model.generateContent(prompt);
+
         reply = result.response.text();
-        break;
-      } catch (err) {
-        lastError = err;
-        console.log(`${modelName} failed:`, err.message);
+
+        if (reply) break;
+      } catch (error) {
+        lastError = error;
+        console.log(`${modelName} failed:`, error.message);
       }
     }
 
-    if (!reply) throw lastError;
+    if (!reply) {
+      throw lastError || new Error("No AI reply generated");
+    }
 
-    return res.status(200).json({ reply });
+    return res.status(200).json({
+      reply,
+    });
   } catch (error) {
     console.log("GEMINI ERROR:", error.message);
 
-    return res.status(500).json({
-      message: "Gemini AI error",
-      error: error.message,
+    return res.status(200).json({
+      reply:
+        "AI service abhi temporary issue de raha hai. Destination, days aur budget batao — main itinerary, budget, places, food aur safety tips ke format me travel plan bana dunga.",
     });
   }
 };
 
-module.exports = { getAISuggestions };
+module.exports = {
+  getAISuggestions,
+};

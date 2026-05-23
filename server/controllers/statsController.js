@@ -4,20 +4,39 @@ const BuddyRequest = require("../models/BuddyRequest");
 
 const getStats = async (req, res) => {
   try {
-    const usersCount = await User.countDocuments();
-    const tripsCount = await Trip.countDocuments();
-    const requestsCount = await BuddyRequest.countDocuments();
+    const [
+      usersCount,
+      tripsCount,
+      requestsCount,
+      destinations,
+    ] = await Promise.all([
+      User.countDocuments(),
+      Trip.countDocuments(),
+      BuddyRequest.countDocuments(),
+      Trip.distinct("destination"),
+    ]);
 
-    const destinations = await Trip.distinct("destination");
-    const destinationsCount = destinations.length;
+    const cleanDestinations =
+      destinations.filter(
+        (dest) =>
+          dest &&
+          typeof dest === "string" &&
+          dest.trim()
+      );
 
     res.status(200).json({
       usersCount,
       tripsCount,
       requestsCount,
-      destinationsCount,
+      destinationsCount:
+        cleanDestinations.length,
     });
   } catch (error) {
+    console.log(
+      "STATS ERROR:",
+      error.message
+    );
+
     res.status(500).json({
       message: "Error fetching stats",
       error: error.message,
@@ -25,4 +44,6 @@ const getStats = async (req, res) => {
   }
 };
 
-module.exports = { getStats };
+module.exports = {
+  getStats,
+};

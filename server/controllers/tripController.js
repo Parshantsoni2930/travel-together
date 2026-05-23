@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const Trip = require("../models/Trip");
+const BuddyRequest = require("../models/BuddyRequest");
 
 const createTrip = async (req, res) => {
   try {
@@ -11,22 +13,39 @@ const createTrip = async (req, res) => {
       });
     }
 
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      return res.status(400).json({
+        message: "Invalid start or end date",
+      });
+    }
+
+    if (end < start) {
+      return res.status(400).json({
+        message: "End date cannot be before start date",
+      });
+    }
+
     const trip = await Trip.create({
       user: req.user._id,
       destination,
-      startDate,
-      endDate,
-      budget,
+      startDate: start,
+      endDate: end,
+      budget: Number(budget),
       travelType,
-      description,
+      description: description || "",
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Trip created successfully",
       trip,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("CREATE TRIP ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
@@ -35,14 +54,18 @@ const createTrip = async (req, res) => {
 
 const getAllTrips = async (req, res) => {
   try {
-    const trips = await Trip.find().populate("user", "name email city profileImage");
+    const trips = await Trip.find()
+      .populate("user", "name email city profileImage")
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "All trips fetched successfully",
       trips,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("GET ALL TRIPS ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
@@ -51,30 +74,37 @@ const getAllTrips = async (req, res) => {
 
 const getMyTrips = async (req, res) => {
   try {
-    const trips = await Trip.find({ user: req.user._id });
+    const trips = await Trip.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "My trips fetched successfully",
       trips,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("GET MY TRIPS ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
 
-
-
-
-
-// GET single trip
 const getTripById = async (req, res) => {
   try {
-    const trip = await Trip.findById(req.params.id).populate(
+    const tripId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(tripId)) {
+      return res.status(400).json({
+        message: "Invalid trip id",
+      });
+    }
+
+    const trip = await Trip.findById(tripId).populate(
       "user",
-      "name email"
+      "name email city profileImage"
     );
 
     if (!trip) {
@@ -83,22 +113,31 @@ const getTripById = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Trip fetched successfully",
       trip,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("GET TRIP BY ID ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
 
-// UPDATE trip
 const updateTrip = async (req, res) => {
   try {
-    const trip = await Trip.findById(req.params.id);
+    const tripId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(tripId)) {
+      return res.status(400).json({
+        message: "Invalid trip id",
+      });
+    }
+
+    const trip = await Trip.findById(tripId);
 
     if (!trip) {
       return res.status(404).json({
@@ -106,35 +145,61 @@ const updateTrip = async (req, res) => {
       });
     }
 
-    // check ownership
     if (trip.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         message: "Not authorized to update this trip",
       });
     }
 
-    const updatedTrip = await Trip.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const allowedUpdates = [
+      "destination",
+      "startDate",
+      "endDate",
+      "budget",
+      "travelType",
+      "description",
+      "tripImage",
+    ];
 
-    res.status(200).json({
+    allowedUpdates.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        trip[field] = field === "budget" ? Number(req.body[field]) : req.body[field];
+      }
+    });
+
+    if (trip.startDate && trip.endDate && trip.endDate < trip.startDate) {
+      return res.status(400).json({
+        message: "End date cannot be before start date",
+      });
+    }
+
+    const updatedTrip = await trip.save();
+
+    return res.status(200).json({
       message: "Trip updated successfully",
       trip: updatedTrip,
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("UPDATE TRIP ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
 
-// DELETE trip
 const deleteTrip = async (req, res) => {
   try {
-    const trip = await Trip.findById(req.params.id);
+    const tripId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(tripId)) {
+      return res.status(400).json({
+        message: "Invalid trip id",
+      });
+    }
+
+    const trip = await Trip.findById(tripId);
 
     if (!trip) {
       return res.status(404).json({
@@ -142,25 +207,29 @@ const deleteTrip = async (req, res) => {
       });
     }
 
-    // check ownership
     if (trip.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         message: "Not authorized to delete this trip",
       });
     }
 
+    await BuddyRequest.deleteMany({ trip: trip._id });
+
     await trip.deleteOne();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Trip deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    console.log("DELETE TRIP ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
   }
 };
+
 module.exports = {
   createTrip,
   getAllTrips,
