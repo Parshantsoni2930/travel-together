@@ -1,22 +1,22 @@
-import api from "./api";
+import axios from "axios";
 
-export const sendRequest = async (data) => {
-  console.log("SEND REQUEST DATA:", data);
-  return (await api.post("/requests/send", data)).data;
-};
+const api = axios.create({
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    "https://travel-together-z3dr.onrender.com/api",
+});
 
-export const getReceivedRequests = async () => {
-  return (await api.get("/requests/received")).data;
-};
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
 
-export const getSentRequests = async () => {
-  return (await api.get("/requests/sent")).data;
-};
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-export const acceptRequest = async (id) => {
-  return (await api.put(`/requests/${id}/accept`)).data;
-};
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-export const rejectRequest = async (id) => {
-  return (await api.put(`/requests/${id}/reject`)).data;
-};
+export default api;
