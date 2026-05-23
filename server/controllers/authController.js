@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
 
-const generateToken = require("../utils/generateToken");
+const generateToken = require("../Utils/generateToken");
 
 // REGISTER USER
 const registerUser = async (
