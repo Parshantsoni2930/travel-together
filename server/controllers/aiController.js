@@ -1,14 +1,13 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 const getAISuggestions = async (req, res) => {
   try {
-    const { query, history = [] } = req.body;
-
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({
-        message: "Gemini API key missing",
-      });
-    }
+    const { query, history = [] } =
+      req.body;
 
     if (!query || !query.trim()) {
       return res.status(400).json({
@@ -16,60 +15,60 @@ const getAISuggestions = async (req, res) => {
       });
     }
 
-    const genAI = new GoogleGenerativeAI(
-      process.env.GEMINI_API_KEY.trim()
-    );
+    const messages = [
+      {
+        role: "system",
+        content:
+          "You are a friendly AI travel planner inside Travel Buddy Finder. Give practical travel plans with itinerary, budget, routes, food, safety tips and packing tips.",
+      },
+    ];
 
-    const safeHistory = Array.isArray(history)
-      ? history
-          .filter((msg) => msg?.text)
-          .slice(-10)
-          .map(
-            (msg) =>
-              `${msg.role === "user" ? "User" : "AI"}: ${msg.text}`
-          )
-          .join("\n")
-      : "";
+    if (Array.isArray(history)) {
+      history
+        .slice(-10)
+        .forEach((msg) => {
+          if (msg?.text) {
+            messages.push({
+              role:
+                msg.role === "user"
+                  ? "user"
+                  : "assistant",
+              content: msg.text,
+            });
+          }
+        });
+    }
 
-    const prompt = `
-You are a friendly AI travel planner inside Travel Buddy Finder.
+    messages.push({
+      role: "user",
+      content: query.trim(),
+    });
 
-Give a practical travel plan with:
-- short overview
-- day-wise itinerary
-- estimated budget
-- best route/transport
-- food suggestions
-- safety tips
-- packing tips
+    const completion =
+      await groq.chat.completions.create({
+        model:
+          "llama-3.3-70b-versatile",
+        messages,
+        temperature: 0.7,
+      });
 
-Keep the answer clear, helpful, and easy to read.
-
-Conversation:
-${safeHistory}
-
-User request:
-${query.trim()}
-
-AI:
-`;
-
-    const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash",
-});
-
-    const result = await model.generateContent(prompt);
-
-    const reply = result.response.text();
+    const reply =
+      completion.choices[0]?.message
+        ?.content ||
+      "No response generated.";
 
     return res.status(200).json({
       reply,
     });
   } catch (error) {
-    console.log("GEMINI ERROR:", error.message);
+    console.log(
+      "GROQ ERROR:",
+      error
+    );
 
-    return res.status(200).json({
-      reply: "AI service abhi temporary issue de raha hai.",
+    return res.status(500).json({
+      message:
+        "AI service temporarily unavailable",
     });
   }
 };
