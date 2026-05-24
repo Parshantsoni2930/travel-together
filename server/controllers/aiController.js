@@ -1,9 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-console.log(
-  process.env.GEMINI_API_KEY?.slice(0, 10)
-);
-
 const getAISuggestions = async (req, res) => {
   try {
     const { query, history = [] } = req.body;
@@ -58,33 +54,13 @@ ${query.trim()}
 AI:
 `;
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash-preview-05-20",
-});
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash-preview-05-20",
+    });
 
-    let reply = "";
-    let lastError = null;
+    const result = await model.generateContent(prompt);
 
-    for (const modelName of modelNames) {
-      try {
-        const model = genAI.getGenerativeModel({
-          model: modelName,
-        });
-
-        const result = await model.generateContent(prompt);
-
-        reply = result.response.text();
-
-        if (reply) break;
-      } catch (error) {
-        lastError = error;
-        console.log(`${modelName} failed:`, error.message);
-      }
-    }
-
-    if (!reply) {
-      throw lastError || new Error("No AI reply generated");
-    }
+    const reply = result.response.text();
 
     return res.status(200).json({
       reply,
@@ -93,8 +69,7 @@ const model = genAI.getGenerativeModel({
     console.log("GEMINI ERROR:", error.message);
 
     return res.status(200).json({
-      reply:
-        "AI service abhi temporary issue de raha hai.",
+      reply: "AI service abhi temporary issue de raha hai.",
     });
   }
 };
