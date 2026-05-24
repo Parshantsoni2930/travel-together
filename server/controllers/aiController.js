@@ -54,11 +54,11 @@ ${query.trim()}
 AI:
 `;
 
-    const modelNames = [
-      "gemini-1.5-flash",
-      "gemini-1.5-flash-8b",
-      "gemini-1.5-pro",
-    ];
+  const modelNames = [
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+  "gemini-1.5-flash-8b",
+];
 
     let reply = "";
     let lastError = null;
