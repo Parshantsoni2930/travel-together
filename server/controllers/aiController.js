@@ -54,10 +54,10 @@ ${query.trim()}
 AI:
 `;
 
-  const modelNames = [
-  "gemini-2.0-flash",
+ const modelNames = [
   "gemini-1.5-flash",
   "gemini-1.5-flash-8b",
+  "gemini-1.5-pro",
 ];
 
     let reply = "";
@@ -92,7 +92,7 @@ AI:
 
     return res.status(200).json({
       reply:
-        "AI service abhi temporary issue de raha hai. Destination, days aur budget batao — main itinerary, budget, places, food aur safety tips ke format me travel plan bana dunga.",
+        "AI service abhi temporary issue de raha hai.",
     });
   }
 };
