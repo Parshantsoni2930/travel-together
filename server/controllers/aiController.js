@@ -55,8 +55,8 @@ AI:
 `;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash-preview-05-20",
-    });
+  model: "gemini-2.5-flash",
+});
 
     const result = await model.generateContent(prompt);
 
