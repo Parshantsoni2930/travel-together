@@ -436,6 +436,179 @@ const Chat = () => {
   );
 };
 
-/* KEEP YOUR EXISTING STYLES SAME */
+const pageStyle = {
+  width: "100%",
+  minHeight: "100vh",
+  padding: "20px",
+  background:
+    "radial-gradient(circle at 15% 10%, rgba(124,58,237,0.14), transparent 28%), radial-gradient(circle at 90% 20%, rgba(236,72,153,0.10), transparent 25%), #050505",
+  boxSizing: "border-box",
+};
+
+const chatContainer = {
+  width: "100%",
+  maxWidth: "1300px",
+  height: "calc(100vh - 40px)",
+  margin: "0 auto",
+  background: "#111111",
+  borderRadius: "28px",
+  overflow: "hidden",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
+  display: "flex",
+  flexDirection: "column",
+};
+
+const chatHeader = {
+  padding: "16px 20px",
+  display: "flex",
+  alignItems: "center",
+  gap: "14px",
+  borderBottom:
+    "1px solid rgba(255,255,255,0.08)",
+  background: "#0d0d0d",
+};
+
+const backBtn = {
+  width: "42px",
+  height: "42px",
+  borderRadius: "50%",
+  border: "none",
+  background: "#1a1a1a",
+  color: "#ffffff",
+  cursor: "pointer",
+  fontSize: "18px",
+  fontWeight: "900",
+};
+
+const avatarBox = {
+  width: "52px",
+  height: "52px",
+  borderRadius: "50%",
+  overflow: "hidden",
+  background: "#ffffff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+};
+
+const avatarImg = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+};
+
+const avatarText = {
+  fontWeight: "900",
+  fontSize: "20px",
+  color: "#000000",
+};
+
+const headerName = {
+  margin: 0,
+  color: "#ffffff",
+  fontSize: "18px",
+  fontWeight: "900",
+};
+
+const onlineText = {
+  margin: "3px 0 0",
+  color: "#22c55e",
+  fontSize: "13px",
+};
+
+const profileBtn = {
+  padding: "10px 18px",
+  borderRadius: "999px",
+  border: "none",
+  background: "#ffffff",
+  color: "#000000",
+  cursor: "pointer",
+  fontWeight: "900",
+};
+
+const messagesBox = {
+  flex: 1,
+  overflowY: "auto",
+  padding: "20px",
+  background:
+    "radial-gradient(circle at top left, rgba(255,255,255,0.03), transparent 35%), #050505",
+};
+
+const bubbleStyle = {
+  maxWidth: "72%",
+  padding: "13px 16px",
+  borderRadius: "18px",
+  lineHeight: "1.6",
+  whiteSpace: "pre-wrap",
+  wordBreak: "break-word",
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px",
+};
+
+const deleteBtn = {
+  alignSelf: "flex-end",
+  padding: "6px 10px",
+  borderRadius: "999px",
+  border: "none",
+  background: "#ef4444",
+  color: "#ffffff",
+  cursor: "pointer",
+  fontSize: "11px",
+  fontWeight: "800",
+};
+
+const inputBar = {
+  padding: "16px",
+  display: "flex",
+  gap: "10px",
+  background: "#0b0b0b",
+  borderTop:
+    "1px solid rgba(255,255,255,0.08)",
+};
+
+const inputStyle = {
+  flex: 1,
+  padding: "14px 16px",
+  borderRadius: "999px",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+  outline: "none",
+  background: "#181818",
+  color: "#ffffff",
+  fontSize: "14px",
+};
+
+const sendBtn = {
+  padding: "14px 24px",
+  borderRadius: "999px",
+  border: "none",
+  background: "#ffffff",
+  color: "#000000",
+  cursor: "pointer",
+  fontWeight: "900",
+};
+
+const emptyBox = {
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const emptyTitle = {
+  color: "#ffffff",
+  marginBottom: "8px",
+};
+
+const emptyText = {
+  color: "#9ca3af",
+};
 
 export default Chat;

@@ -421,6 +421,85 @@ const pageStyle = {
     "radial-gradient(circle at top left, #312e81, transparent 35%), radial-gradient(circle at top right, #831843, transparent 30%), linear-gradient(135deg, #020617, #111827)",
 };
 
-/* KEEP REST OF YOUR STYLES SAME */
+const cardStyle = {
+  width: "100%",
+  maxWidth: "900px",
+  margin: "0 auto",
+  padding: "28px",
+  borderRadius: "28px",
+  background: "#111111",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+  boxShadow:
+    "0 14px 36px rgba(0,0,0,0.45)",
+};
+
+const headerStyle = {
+  marginBottom: "24px",
+};
+
+const backBtn = {
+  padding: "10px 18px",
+  borderRadius: "999px",
+  border: "none",
+  background: "#ffffff",
+  color: "#000000",
+  cursor: "pointer",
+  fontWeight: "900",
+  marginBottom: "18px",
+};
+
+const titleStyle = {
+  margin: 0,
+  fontSize: "32px",
+  fontWeight: "900",
+  color: "#ffffff",
+};
+
+const subtitleStyle = {
+  marginTop: "10px",
+  color: "#9ca3af",
+  lineHeight: "1.6",
+};
+
+const labelStyle = {
+  display: "block",
+  marginBottom: "8px",
+  marginTop: "16px",
+  color: "#ffffff",
+  fontWeight: "800",
+};
+
+const inputStyle = {
+  width: "100%",
+  boxSizing: "border-box",
+  padding: "14px",
+  borderRadius: "14px",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+  outline: "none",
+  background: "#1a1a1a",
+  color: "#ffffff",
+  fontSize: "14px",
+};
+
+const rowStyle = {
+  display: "flex",
+  gap: "14px",
+  marginTop: "6px",
+};
+
+const submitBtn = {
+  width: "100%",
+  marginTop: "22px",
+  padding: "15px",
+  borderRadius: "16px",
+  border: "none",
+  background: "#ffffff",
+  color: "#000000",
+  cursor: "pointer",
+  fontWeight: "900",
+  fontSize: "15px",
+};
 
 export default EditTrip;
