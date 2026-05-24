@@ -445,52 +445,160 @@ const pageStyle = {
   boxSizing: "border-box",
 };
 
-const chatContainer = {
+const heroSection = {
+  position: "relative",
   width: "100%",
-  maxWidth: "1300px",
-  height: "calc(100vh - 40px)",
-  margin: "0 auto",
-  background: "#111111",
-  borderRadius: "28px",
+  maxWidth: "1400px",
+  margin: "0 auto 18px",
+  minHeight: "260px",
+  borderRadius: "30px",
   overflow: "hidden",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
-  display: "flex",
-  flexDirection: "column",
-};
-
-const chatHeader = {
-  padding: "16px 20px",
-  display: "flex",
-  alignItems: "center",
-  gap: "14px",
-  borderBottom:
+  backgroundImage:
+    "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  border:
     "1px solid rgba(255,255,255,0.08)",
-  background: "#0d0d0d",
 };
 
-const backBtn = {
-  width: "42px",
-  height: "42px",
-  borderRadius: "50%",
-  border: "none",
-  background: "#1a1a1a",
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(0,0,0,0.84), rgba(0,0,0,0.55), rgba(0,0,0,0.25))",
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 2,
+  padding: "34px",
+  maxWidth: "700px",
+};
+
+const heroBadge = {
+  display: "inline-block",
+  padding: "8px 13px",
+  borderRadius: "999px",
+  background:
+    "rgba(255,255,255,0.12)",
+  border:
+    "1px solid rgba(255,255,255,0.18)",
   color: "#ffffff",
-  cursor: "pointer",
-  fontSize: "18px",
+  fontSize: "12px",
+  fontWeight: "900",
+  marginBottom: "14px",
+};
+
+const heroTitle = {
+  margin: 0,
+  fontSize:
+    "clamp(38px, 6vw, 72px)",
+  fontWeight: "900",
+  lineHeight: "1",
+  color: "#ffffff",
+};
+
+const heroText = {
+  marginTop: "14px",
+  color: "#d4d4d4",
+  lineHeight: "1.7",
+  fontSize: "15px",
+};
+
+const statsGlass = {
+  position: "absolute",
+  right: "24px",
+  bottom: "24px",
+  zIndex: 2,
+  padding: "18px 22px",
+  borderRadius: "24px",
+  background:
+    "rgba(255,255,255,0.08)",
+  backdropFilter: "blur(12px)",
+  border:
+    "1px solid rgba(255,255,255,0.12)",
+  color: "#ffffff",
+};
+
+const statsLabel = {
+  fontSize: "12px",
+  color: "#d4d4d4",
+};
+
+const statsValue = {
+  margin: "8px 0 0",
+  fontSize: "36px",
   fontWeight: "900",
 };
 
-const avatarBox = {
-  width: "52px",
-  height: "52px",
+const containerStyle = {
+  width: "100%",
+  maxWidth: "1400px",
+  margin: "0 auto",
+};
+
+const emptyBox = {
+  width: "100%",
+  minHeight: "340px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  textAlign: "center",
+  borderRadius: "28px",
+  background: "#111111",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+};
+
+const emptyTitle = {
+  color: "#ffffff",
+  marginBottom: "10px",
+};
+
+const emptyText = {
+  color: "#9ca3af",
+  marginBottom: "18px",
+};
+
+const exploreBtn = {
+  padding: "14px 22px",
+  borderRadius: "999px",
+  border: "none",
+  background: "#ffffff",
+  color: "#000000",
+  cursor: "pointer",
+  fontWeight: "900",
+};
+
+const chatList = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+};
+
+const chatCard = {
+  display: "flex",
+  alignItems: "center",
+  gap: "18px",
+  padding: "18px",
+  borderRadius: "24px",
+  background: "#111111",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+  cursor: "pointer",
+};
+
+const avatar = {
+  width: "72px",
+  height: "72px",
   borderRadius: "50%",
   overflow: "hidden",
   background: "#ffffff",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  cursor: "pointer",
+  flexShrink: 0,
 };
 
 const avatarImg = {
@@ -500,115 +608,49 @@ const avatarImg = {
 };
 
 const avatarText = {
+  fontSize: "28px",
   fontWeight: "900",
-  fontSize: "20px",
   color: "#000000",
 };
 
-const headerName = {
+const chatInfo = {
+  flex: 1,
+};
+
+const chatTop = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "12px",
+};
+
+const userName = {
   margin: 0,
   color: "#ffffff",
-  fontSize: "18px",
+  fontSize: "20px",
   fontWeight: "900",
 };
 
-const onlineText = {
-  margin: "3px 0 0",
+const statusDot = {
   color: "#22c55e",
   fontSize: "13px",
+  fontWeight: "700",
+};
+
+const lastMsg = {
+  marginTop: "8px",
+  color: "#9ca3af",
+  lineHeight: "1.6",
 };
 
 const profileBtn = {
-  padding: "10px 18px",
+  padding: "12px 18px",
   borderRadius: "999px",
   border: "none",
   background: "#ffffff",
   color: "#000000",
   cursor: "pointer",
   fontWeight: "900",
-};
-
-const messagesBox = {
-  flex: 1,
-  overflowY: "auto",
-  padding: "20px",
-  background:
-    "radial-gradient(circle at top left, rgba(255,255,255,0.03), transparent 35%), #050505",
-};
-
-const bubbleStyle = {
-  maxWidth: "72%",
-  padding: "13px 16px",
-  borderRadius: "18px",
-  lineHeight: "1.6",
-  whiteSpace: "pre-wrap",
-  wordBreak: "break-word",
-  border:
-    "1px solid rgba(255,255,255,0.06)",
-  display: "flex",
-  flexDirection: "column",
-  gap: "8px",
-};
-
-const deleteBtn = {
-  alignSelf: "flex-end",
-  padding: "6px 10px",
-  borderRadius: "999px",
-  border: "none",
-  background: "#ef4444",
-  color: "#ffffff",
-  cursor: "pointer",
-  fontSize: "11px",
-  fontWeight: "800",
-};
-
-const inputBar = {
-  padding: "16px",
-  display: "flex",
-  gap: "10px",
-  background: "#0b0b0b",
-  borderTop:
-    "1px solid rgba(255,255,255,0.08)",
-};
-
-const inputStyle = {
-  flex: 1,
-  padding: "14px 16px",
-  borderRadius: "999px",
-  border:
-    "1px solid rgba(255,255,255,0.08)",
-  outline: "none",
-  background: "#181818",
-  color: "#ffffff",
-  fontSize: "14px",
-};
-
-const sendBtn = {
-  padding: "14px 24px",
-  borderRadius: "999px",
-  border: "none",
-  background: "#ffffff",
-  color: "#000000",
-  cursor: "pointer",
-  fontWeight: "900",
-};
-
-const emptyBox = {
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const emptyTitle = {
-  color: "#ffffff",
-  marginBottom: "8px",
-};
-
-const emptyText = {
-  color: "#9ca3af",
 };
 
 export default Chat;
