@@ -4,6 +4,10 @@ const dotenv = require("dotenv");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
+console.log(
+  "GEMINI EXISTS:",
+  !!process.env.GEMINI_API_KEY
+);
 
 const connectDB = require("./config/db");
 

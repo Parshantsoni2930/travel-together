@@ -1,5 +1,9 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
+console.log(
+  process.env.GEMINI_API_KEY?.slice(0, 10)
+);
+
 const getAISuggestions = async (req, res) => {
   try {
     const { query, history = [] } = req.body;
