@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
 import {
-  getFriendRequests,
-  acceptFriendRequest,
-  rejectFriendRequest,
-} from "../services/userService";
+  getReceivedRequests,
+  acceptRequest,
+  rejectRequest,
+} from "../services/requestService";
 
 const Requests = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState("");
+  const [requests, setRequests] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [actionLoading, setActionLoading] =
+    useState("");
 
   const getImageUrl = (img) => {
     if (!img) return "";
 
-    if (img.startsWith("http")) return img;
+    if (img.startsWith("http"))
+      return img;
 
     return `https://travel-together-z3dr.onrender.com${
-      img.startsWith("/") ? img : `/${img}`
+      img.startsWith("/")
+        ? img
+        : `/${img}`
     }`;
   };
 
@@ -25,12 +34,16 @@ const Requests = () => {
     try {
       setLoading(true);
 
-      const data = await getFriendRequests();
+      const data =
+        await getReceivedRequests();
 
-      setRequests(data.requests || []);
+      setRequests(
+        data.requests || []
+      );
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
+        error.response?.data
+          ?.message ||
           "Error loading requests"
       );
     } finally {
@@ -38,20 +51,28 @@ const Requests = () => {
     }
   };
 
-  const handleAccept = async (id) => {
+  const handleAccept = async (
+    id
+  ) => {
     try {
       setActionLoading(id);
 
-      await acceptFriendRequest(id);
+      await acceptRequest(id);
 
-      toast.success("Buddy request accepted!");
+      toast.success(
+        "Trip buddy request accepted!"
+      );
 
       setRequests((prev) =>
-        prev.filter((req) => req._id !== id)
+        prev.filter(
+          (req) =>
+            req._id !== id
+        )
       );
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
+        error.response?.data
+          ?.message ||
           "Error accepting request"
       );
     } finally {
@@ -59,20 +80,28 @@ const Requests = () => {
     }
   };
 
-  const handleReject = async (id) => {
+  const handleReject = async (
+    id
+  ) => {
     try {
       setActionLoading(id);
 
-      await rejectFriendRequest(id);
+      await rejectRequest(id);
 
-      toast.success("Buddy request rejected");
+      toast.success(
+        "Trip buddy request rejected"
+      );
 
       setRequests((prev) =>
-        prev.filter((req) => req._id !== id)
+        prev.filter(
+          (req) =>
+            req._id !== id
+        )
       );
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
+        error.response?.data
+          ?.message ||
           "Error rejecting request"
       );
     } finally {
@@ -94,101 +123,175 @@ const Requests = () => {
             Connect • Accept • Travel
           </span>
 
-          <h1 style={heroTitle}>Buddy Requests</h1>
+          <h1 style={heroTitle}>
+            Trip Requests
+          </h1>
 
           <p style={heroText}>
-            Manage incoming travel buddy requests and
+            Manage incoming travel
+            buddy requests and
             connect with travelers.
           </p>
         </div>
 
         <div style={statsGlass}>
-          <span style={statsLabel}>Pending Requests</span>
+          <span style={statsLabel}>
+            Pending Requests
+          </span>
 
-          <h2 style={statsValue}>{requests.length}</h2>
+          <h2 style={statsValue}>
+            {requests.length}
+          </h2>
         </div>
       </div>
 
       <div style={containerStyle}>
         {loading ? (
-          <div style={emptyBox}>Loading requests...</div>
+          <div style={emptyBox}>
+            Loading requests...
+          </div>
         ) : requests.length === 0 ? (
           <div style={emptyBox}>
-            <h3 style={emptyTitle}>No requests found</h3>
+            <h3 style={emptyTitle}>
+              No requests found
+            </h3>
 
             <p style={emptyText}>
-              New buddy requests will appear here.
+              New trip buddy
+              requests will appear
+              here.
             </p>
           </div>
         ) : (
           <div style={requestList}>
             {requests.map((req) => {
-              const profileImg = getImageUrl(
-                req?.profileImage
-              );
+              const sender =
+                req.sender || {};
 
-              const initial = req?.name
-                ? req.name.charAt(0).toUpperCase()
-                : "U";
+              const trip =
+                req.trip || {};
+
+              const profileImg =
+                getImageUrl(
+                  sender?.profileImage
+                );
+
+              const initial =
+                sender?.name
+                  ? sender.name
+                      .charAt(0)
+                      .toUpperCase()
+                  : "U";
 
               return (
-                <div key={req._id} style={requestCard}>
-                  <div style={userInfo}>
-                    <div style={avatarBox}>
+                <div
+                  key={req._id}
+                  style={requestCard}
+                >
+                  <div
+                    style={userInfo}
+                  >
+                    <div
+                      style={
+                        avatarBox
+                      }
+                    >
                       {profileImg ? (
                         <img
-                          src={profileImg}
-                          alt={req?.name || "User"}
-                          style={avatarImg}
+                          src={
+                            profileImg
+                          }
+                          alt={
+                            sender?.name ||
+                            "User"
+                          }
+                          style={
+                            avatarImg
+                          }
                         />
                       ) : (
-                        <span style={avatarText}>
+                        <span
+                          style={
+                            avatarText
+                          }
+                        >
                           {initial}
                         </span>
                       )}
                     </div>
 
                     <div>
-                      <h3 style={nameStyle}>
-                        {req?.name || "User"}
+                      <h3
+                        style={
+                          nameStyle
+                        }
+                      >
+                        {sender?.name ||
+                          "User"}
                       </h3>
 
-                      <p style={emailStyle}>
-                        {req?.email || "No email"}
+                      <p
+                        style={
+                          emailStyle
+                        }
+                      >
+                        {sender?.email ||
+                          "No email"}
                       </p>
 
-                      <p style={cityStyle}>
-                        📍{" "}
-                        {req?.city || "City not added"}
+                      <p
+                        style={
+                          cityStyle
+                        }
+                      >
+                        🧳 Trip:{" "}
+                        {trip?.destination ||
+                          "Trip not found"}
                       </p>
                     </div>
                   </div>
 
-                  <div style={buttonBox}>
+                  <div
+                    style={
+                      buttonBox
+                    }
+                  >
                     <button
                       onClick={() =>
-                        handleAccept(req._id)
+                        handleAccept(
+                          req._id
+                        )
                       }
-                      style={acceptBtn}
+                      style={
+                        acceptBtn
+                      }
                       disabled={
-                        actionLoading === req._id
+                        actionLoading ===
+                        req._id
                       }
                     >
-                      {actionLoading === req._id
+                      {actionLoading ===
+                      req._id
                         ? "Please wait..."
                         : "Accept"}
                     </button>
 
                     <button
                       onClick={() =>
-                        handleReject(req._id)
+                        handleReject(
+                          req._id
+                        )
                       }
-                      style={rejectBtn}
+                      style={
+                        rejectBtn
+                      }
                       disabled={
-                        actionLoading === req._id
+                        actionLoading ===
+                        req._id
                       }
                     >
-                      {actionLoading === req._id
+                      {actionLoading ===
+                      req._id
                         ? "Please wait..."
                         : "Reject"}
                     </button>
@@ -202,8 +305,6 @@ const Requests = () => {
     </div>
   );
 };
-
-/* styles unchanged below */
 
 const pageStyle = {
   width: "100%",
@@ -224,15 +325,18 @@ const heroSection = {
   borderRadius: "30px",
   overflow: "hidden",
   display: "flex",
-  justifyContent: "space-between",
+  justifyContent:
+    "space-between",
   alignItems: "flex-end",
   gap: "18px",
   backgroundImage:
     "url('https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=1600&q=80')",
   backgroundSize: "cover",
   backgroundPosition: "center",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 14px 36px rgba(0,0,0,0.45)",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+  boxShadow:
+    "0 14px 36px rgba(0,0,0,0.45)",
 };
 
 const heroOverlay = {
@@ -252,8 +356,10 @@ const heroBadge = {
   display: "inline-block",
   padding: "8px 13px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.12)",
-  border: "1px solid rgba(255,255,255,0.18)",
+  background:
+    "rgba(255,255,255,0.12)",
+  border:
+    "1px solid rgba(255,255,255,0.18)",
   color: "#fff",
   fontSize: "12px",
   fontWeight: "900",
@@ -262,7 +368,8 @@ const heroBadge = {
 
 const heroTitle = {
   margin: 0,
-  fontSize: "clamp(38px, 6vw, 70px)",
+  fontSize:
+    "clamp(38px, 6vw, 70px)",
   fontWeight: "900",
   lineHeight: "1",
   color: "#ffffff",
@@ -281,8 +388,10 @@ const statsGlass = {
   zIndex: 2,
   padding: "18px 24px",
   borderRadius: "24px",
-  background: "rgba(255,255,255,0.08)",
-  border: "1px solid rgba(255,255,255,0.14)",
+  background:
+    "rgba(255,255,255,0.08)",
+  border:
+    "1px solid rgba(255,255,255,0.14)",
   backdropFilter: "blur(12px)",
   color: "#ffffff",
   minWidth: "180px",
@@ -309,8 +418,10 @@ const containerStyle = {
   padding: "24px",
   borderRadius: "28px",
   background: "#111111",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+  boxShadow:
+    "0 12px 30px rgba(0,0,0,0.35)",
   boxSizing: "border-box",
 };
 
@@ -322,13 +433,15 @@ const requestList = {
 
 const requestCard = {
   display: "flex",
-  justifyContent: "space-between",
+  justifyContent:
+    "space-between",
   alignItems: "center",
   gap: "16px",
   padding: "18px",
   borderRadius: "22px",
   background: "#181818",
-  border: "1px solid rgba(255,255,255,0.06)",
+  border:
+    "1px solid rgba(255,255,255,0.06)",
   flexWrap: "wrap",
 };
 
@@ -400,7 +513,8 @@ const acceptBtn = {
 
 const rejectBtn = {
   padding: "11px 18px",
-  border: "1px solid rgba(255,255,255,0.08)",
+  border:
+    "1px solid rgba(255,255,255,0.08)",
   borderRadius: "14px",
   background: "#0b0b0b",
   color: "#ffffff",
@@ -413,7 +527,8 @@ const emptyBox = {
   borderRadius: "24px",
   background: "#181818",
   textAlign: "center",
-  border: "1px solid rgba(255,255,255,0.06)",
+  border:
+    "1px solid rgba(255,255,255,0.06)",
 };
 
 const emptyTitle = {
